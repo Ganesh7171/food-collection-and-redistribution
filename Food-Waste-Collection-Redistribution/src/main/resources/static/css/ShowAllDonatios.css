@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Donations Table</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap 3.4 CDN -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+    
+</head>
+<body>
+<div class="container mt-5">
+    <h2>Donations</h2>
+    <table class="table table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <>Donation Id</th>
+                <th>Type</th>
+                <th>Claim Time</th>
+                <th>Status</th>
+                <th>Details</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="donation, stat : ${donations}">
+                <td th:text="${donation.donationId}">Donation Id</td>
+                <td th:text="${donation.mealType}">Meal Type</td>
+                <td th:text="${donation.claimTime}">Claim Time</td>
+                <td th:text="${donation.status}">Status</td>
+                <td>
+                    <button class="btn btn-info" type="button"
+                            th:onclick="'openClaimPopup(' + '\'' + ${donation.donationId} + '\'' + ')'">
+                        Place Request
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Claim Modal -->
+<div id="claimModal" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Claim Food Donation</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form th:action="@{/claims/submitClaim}" th:object="${claimForm}" method="post">
+            <input type="hidden" id="donationIdField" name="donation.donationId" />
+            <input type.userId" th:value="${session.Users.userId}" />
+
+            <label for="enterNew">Request For:</label><br>
+            <input class="form-check-input" type="radio" name="requestForOption" id="useSaved" value="saved"
+                   onclick="toggleAddress(true)" />
+            <label for="useSaved">Self</label>
+
+            <input class="form-check-input ml-3" type="radio" name="requestForOption" id="enterNew" value="custom"
+                   onclick="toggleAddress(false)" />
+            <label for="enterNew">For others</label>
+
+            <div class="form-group">
+                <label for="claimerName">Your Name</label>
+                <input type="text" class="form-control" id="claimerName" th:field="*{claimerName}" required />
+            </div>
+
+            <div class="form-group">
+                <label for="contactNumber">Contact Number</label>
+                <input type="text" class="form-control" id="contactNumber" th:field="*{contactNumber}" required />
+            </div>
+
+            <div class="form-group">
+                <label for="addressInput">Claim Address</label>
+                <input type="text" class="form-control" id="addressInput" th:field="*{claimedAddress}" required />
+            </div>
+
+            <div class="form-group">
+                <label for="googlePlusCode">Google Plus Code</label>
+                <input type="text" class="form-control" id="googlePlusCode" th:field="*{googlePlusCode}" required />
+            </div>
+
+            <button type="submit" class="btn btn-primary">Submit Claim</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- JavaScript -->
+<script>
+  function openClaimPopup(donationId) {
+    document.getElementById("donationIdField").value = donationId;
+    $('#claimModal').modal('show');
+  }
+
+  function toggleAddress(useSaved) {
+    const userNameInput = document.getElementById("claimerName");
+    const contactNumberInput = document.getElementById("contactNumber");
+    const addressInput = document.getElementById("addressInput");
+    const googlePlusCodeInput = document.getElementById("googlePlusCode");
+
+    if (useSaved) {
+      userNameInput.value = /*[[${session.Users.username}]]*/ '';
+      userNameInput.readOnly = true;
+
+      contactNumberInput.value = /*[[${session.Users.phoneNumber}]]*/ '';
+      contactNumberInput.readOnly = true;
+
+      addressInput.value = /*[[${session.Users.address}]]*/ '';
+      addressInput.readOnly = true;
+
+      googlePlusCodeInput.value = /*[[${session.Users.googlePlusCode}]]*/ '';
+      googlePlusCodeInput.readOnly = true;
+    } else {
+      userNameInput.value = '';
+      userNameInput.readOnly = false;
+
+      contactNumberInput.value = '';
+      contactNumberInput.readOnly = false;
+
+      addressInput.value = '';
+      addressInput.readOnly = false;
+
+      googlePlusCodeInput.value = '';
+      googlePlusCodeInput.readOnly = false;
+    }
+  }
+</script>
+</body>
+</html>

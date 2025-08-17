@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Claim Approval</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+    <h1>Donation Claim Approval</h1>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Request ID</th>
+                <th>Donor Name</th>
+                <th>Donation Item</th>
+                <th>Requested By</th>
+                <th>Details</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="request : ${calimsRequests}">
+                <td th:text="${request.claimId}">1</td>
+                <td th:text="${request.donation.user.username}">John Doe</td>
+                <td th:text="${request.donation.mealType}">Books</td>
+                <td th:text="${request.claimerName}">Jane Smith</td>
+                <td th:text="${request.claimTime}">Need for school library</td>
+                <td>
+                    <form th:action="@{/claims/approve}" method="post" style="display:inline;">
+                        <input type="hidden" th:name="id" th:value="${request.claimId}" />
+                        <button type="submit">Approve</button>
+                    </form>
+                    <form th:action="@{/reject}" method="post" style="display:inline;">
+                        <input type="hidden" th:name="id" th:value="${request.claimId}" />
+                        <button type="submit">Reject</button>
+                    </form>
+                    <form th:action="@{/refer-back}" method="post" style="display:inline;">
+                        <input type="hidden" th:name="id" th:value="${request.claimId}" />
+                        <button type="submit">Refer Back</button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

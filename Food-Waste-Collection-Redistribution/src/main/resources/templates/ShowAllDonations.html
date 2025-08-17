@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:inline="javascript">
+<head>
+    <meta charset="UTF-8">
+    <title>Donations Table</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	  <!-- Bootstrap 3.4 CDN -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    
+</head>
+<body>
+<div class="container mt-5">
+    <h2>Donations</h2>
+    <table class="table table-bordered">
+        <thead class="thead-dark">
+        <tr>
+           	<th>Donation Id		</th>
+            <th>Type</th>
+            <th>Claim Time</th>
+            <th>Status</th>
+            <th>Details</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="donation, stat : ${donations}">
+            <td th:text="${donation.donationId}" th:attr="data-toggle='modal', data-target='#detailsModal-' + ${stat.index}">Donation Id</td>
+            <td th:text="${donation.mealType}" th:attr="data-toggle='modal', data-target='#detailsModal-' + ${stat.index}">Meal Type</td>
+            <td th:text="${donation.claimTime}" th:attr="data-toggle='modal', data-target='#detailsModal-' + ${stat.index}">Claim Time</td>
+            <td th:text="${donation.status}" th:attr="data-toggle='modal', data-target='#detailsModal-' + ${stat.index}">Status</td>
+            <td>
+                <button class="btn btn-info" type="button"
+                        th:onclick="'openClaimPopup(' + '\'' + ${donation.donationId} + '\'' + ')'">
+                    Place Request
+                </button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+ 
+<!-- <!-- Claim Modal -->
+ <div id="claimModal" class="modal fade"  margin="5px" tabindex="1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Claim Food Donation</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="classmodal-body">
+                <form id="claimForm">
+                    <input type="hidden" id="donationIdField" name="donation.donationId"/>
+                    <input type="hidden" name="user.userId" th:value="${session.Users.userId}"/>
+
+                    <label for="enterNew">Request For:</label><br>
+                    <input class="form-check-input" type="radio" name="requestForOption" id="useSaved" value="saved"
+                           onclick="toggleAddress(true)"/>
+                    <label for="useSaved">Self</label>
+
+                    <input class="form-check-input ml-3" type="radio" name="requestForOption" id="enterNew" value="custom"
+                           onclick="toggleAddress(false)"/>
+                    <label for="enterNew">For others</label>
+
+                    <div class="form-group">
+                        <label for="claimerName">Your Name</label>
+                        <input type="text" class="form-control" id="claimerName" name="claimerName" required/>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contactNumber">Contact Number</label>
+                        <input type="text" class="form-control" id="contactNumber" name="contactNumber" required/>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="addressInput">Claim Address</label>
+                        <input type="text" class="form-control" id="addressInput" name="claimedAddress" required/>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="googlePlusCode">Google Plus Code</label>
+                        <input type="text" class="form-control" id="googlePlusCode" name="googlePlusCode" required/>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Submit Claim</button>
+               
+                </form>
+            </div>
+        </div>
+    </div>
+</div> 
+
+
+<!-- Response Modal -->
+<div id="responseModal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Claim Status</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="responseMessage"></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Donation Details Modal Template -->
+<div th:each="donation, stat : ${donations}"
+     th:id="'detailsModal-' + ${stat.index}"
+     class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Donation Details</h4>
+            </div>
+
+            <div class="modal-body">
+                <p><strong>Donation Id:</strong>
+                    <span th:text="${donation != null ? donation.donationId : 'N/A'}">User</span><br>
+                </p>
+                <p><strong>Address:</strong> <span th:text="${donation.address}">Address</span></p>
+                <p>
+                    <strong>Google Plus Code:</strong>
+                    <span th:text="${donation.googlePlusCode}">Code</span>
+                    <a class="btn btn-xs btn-primary" style="margin-left:10px;"
+                       th:href="'https://www.google.com/maps/search/?api=1&amp;query=' + ${donation.googlePlusCode}"
+                       target="_blank">
+                        View on Map
+                    </a>
+                </p>
+                <p><strong>User:</strong>
+                    <span th:text="${donation.user != null ? donation.user.username : 'N/A'}">User</span><br>
+                </p>
+                <p><strong>Mobile Number:</strong>
+                    <span th:text="${donation.user != null ? donation.user.phoneNumber: 'N/A'}">Mobile Number</span><br>
+                </p>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript -->
+<script>
+    function openClaimPopup(donationId) {
+        document.getElementById("donationIdField").value = donationId;
+        $('#claimModal').modal('show');
+    }
+
+    function toggleAddress(useSaved) {
+        const userNameInput = document.getElementById("claimerName");
+        const contactNumberInput = document.getElementById("contactNumber");
+        const addressInput = document.getElementById("addressInput");
+        const googlePlusCodeInput = document.getElementById("googlePlusCode");
+
+        if (useSaved) {
+            userNameInput.value = /*[[${session.Users.username}]]*/ '';
+            userNameInput.readOnly = true;
+
+            contactNumberInput.value = /*[[${session.Users.phoneNumber}]]*/ '';
+            contactNumberInput.readOnly = true;
+
+            addressInput.value = /*[[${session.Users.address}]]*/ '';
+            addressInput.readOnly = true;
+
+            googlePlusCodeInput.value = /*[[${session.Users.googlePlusCode}]]*/ '';
+            googlePlusCodeInput.readOnly = true;
+        } else {
+            userNameInput.value = '';
+            userNameInput.readOnly = false;
+
+            contactNumberInput.value = '';
+            contactNumberInput.readOnly = false;
+
+            addressInput.value = '';
+            addressInput.readOnly = false;
+
+            googlePlusCodeInput.value = '';
+            googlePlusCodeInput.readOnly = false;
+        }
+    }
+
+    $(document).ready(function () {
+        $('#claimForm').submit(function (event) {
+            event.preventDefault();
+
+            const formData = $(this).serialize();
+
+            $.post('/claims/submitClaim', formData, function (response) {
+                $('#claimModal').modal('hide');
+                $('#responseMessage').text(response);
+                $('#responseModal').modal('show');
+            }).fail(function (xhr) {
+                $('#claimModal').modal('hide');
+                $('#responseMessage').text("An error occurred: " + xhr.responseText);
+                $('#responseModal').modal('show');
+            });
+        });
+    });
+</script>
+
+<!-- Response Modal -->
+<div id="responseModal" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Claim Status</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p id="responseMessage"></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

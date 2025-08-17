@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Sign Up</title>
+    
+    		
+
+					<link rel="stylesheet" th:href="@{/css/SignUp.css}">
+
+					
+		
+</head>
+<body>
+    <h2>Sign Up Form</h2>
+
+    <form th:action="@{/fwc/saveUser}" th:object="${newUser}" method="post">
+        
+	<label>User Type:</label>
+	<select th:field="*{userType}">
+	    <option value="Restaurant">Restaurant</option>
+	    <option value="NGO">NGO</option>
+	    <option value="Volunteer">Volunteer</option>
+	</select><br/>
+
+        <label>Name:</label>
+        <input type="text" th:field="*{username}" /><br/>
+
+        <label>Address:</label>
+        <input type="text" th:field="*{address}" /><br/>
+
+        <label>Mobile Number:</label>
+        <input type="text" th:field="*{phoneNumber}" /><br/>
+
+        <label>Email Address:</label>
+        <input type="email" th:field="*{emailAddress}" /><br/>
+
+       <!--  <label>Username:</label>
+        <input type="text" th:field="*{username}" /><br/> -->
+
+        <label>Password:</label>
+        <input type="password" th:field="*{password}" /><br/>
+
+       <!--  <label>Confirm Password:</label>
+        <input type="password" th:field="*{confirmPassword}" /><br/>
+ -->
+        <label>Google Plus Code:</label>
+        <input type="text" th:field="*{googlePlusCode}" /><br/>
+
+        <button type="submit">Sign Up</button>
+    </form>
+
+    <p th:text="${message}"></p>
+</body>
+</html>
