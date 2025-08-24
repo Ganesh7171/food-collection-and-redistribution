@@ -1,135 +1,490 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Donations Table</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+/* page shell */
+body {
+  background: #f5f7fa;
+}
 
-    <!-- Bootstrap 3.4 CDN -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+.page-header {
+  margin: 10px 0 20px;
+}
 
-    
-</head>
-<body>
-<div class="container mt-5">
-    <h2>Donations</h2>
-    <table class="table table-bordered">
-        <thead class="thead-dark">
-            <tr>
-                <>Donation Id</th>
-                <th>Type</th>
-                <th>Claim Time</th>
-                <th>Status</th>
-                <th>Details</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="donation, stat : ${donations}">
-                <td th:text="${donation.donationId}">Donation Id</td>
-                <td th:text="${donation.mealType}">Meal Type</td>
-                <td th:text="${donation.claimTime}">Claim Time</td>
-                <td th:text="${donation.status}">Status</td>
-                <td>
-                    <button class="btn btn-info" type="button"
-                            th:onclick="'openClaimPopup(' + '\'' + ${donation.donationId} + '\'' + ')'">
-                        Place Request
-                    </button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</div>
+.page-title {
+  margin: 0;
+  font-weight: 600;
+}
 
-<!-- Claim Modal -->
-<div id="claimModal" class="modal fade" tabindex="-1" role="dialog">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title">Claim Food Donation</h4>
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-      </div>
-      <div class="modal-body">
-        <form th:action="@{/claims/submitClaim}" th:object="${claimForm}" method="post">
-            <input type="hidden" id="donationIdField" name="donation.donationId" />
-            <input type.userId" th:value="${session.Users.userId}" />
+/* flex split layout */
+.split-shell {
+  display: flex;
+  align-items: stretch;
+  min-height: 100vh;
+  overflow: hidden;
+  background: transparent;
+}
 
-            <label for="enterNew">Request For:</label><br>
-            <input class="form-check-input" type="radio" name="requestForOption" id="useSaved" value="saved"
-                   onclick="toggleAddress(true)" />
-            <label for="useSaved">Self</label>
+/* left side (cards) */
+.list-pane {
+  flex: 1 1 auto;
+  padding: 20px 24px;
+  transition: flex-basis 0.35s ease, width 0.35s ease, padding 0.2s ease;
+}
 
-            <input class="form-check-input ml-3" type="radio" name="requestForOption" id="enterNew" value="custom"
-                   onclick="toggleAddress(false)" />
-            <label for="enterNew">For others</label>
+/* right side (details) */
+.details-pane {
+  position: relative;
+  width: 0;
+  background: #ffffff;
+  border-left: 1px solid #e5e7eb;
+  box-shadow: -8px 0 16px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+  padding: 24px;
+  transform: translateX(20px);
+  opacity: 0;
+  transition: width 0.35s ease, transform 0.35s ease, opacity 0.35s ease;
+}
 
-            <div class="form-group">
-                <label for="claimerName">Your Name</label>
-                <input type="text" class="form-control" id="claimerName" th:field="*{claimerName}" required />
-            </div>
+.split-shell.show-details .list-pane {
+  flex: 0 0 50%;
+}
 
-            <div class="form-group">
-                <label for="contactNumber">Contact Number</label>
-                <input type="text" class="form-control" id="contactNumber" th:field="*{contactNumber}" required />
-            </div>
+.split-shell.show-details .details-pane {
+  width: 50%;
+  transform: translateX(0);
+  opacity: 1;
+}
 
-            <div class="form-group">
-                <label for="addressInput">Claim Address</label>
-                <input type="text" class="form-control" id="addressInput" th:field="*{claimedAddress}" required />
-            </div>
+/* cards grid */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 18px;
+}
 
-            <div class="form-group">
-                <label for="googlePlusCode">Google Plus Code</label>
-                <input type="text" class="form-control" id="googlePlusCode" th:field="*{googlePlusCode}" required />
-            </div>
+/* card look */
+.donation-card {
+  background: #ffffff;
+  border: 1px solid #e6e8eb;
+  border-radius: 12px;
+  padding: 14px 14px 12px;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+  min-height: 170px; /* gives a neat square-ish look */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
 
-            <button type="submit" class="btn btn-primary">Submit Claim</button>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
+.donation-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 18px rgba(16, 24, 40, 0.12);
+}
 
-<!-- JavaScript -->
-<script>
-  function openClaimPopup(donationId) {
-    document.getElementById("donationIdField").value = donationId;
-    $('#claimModal').modal('show');
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.meal-type {
+  font-weight: 600;
+  color: #1f2937;
+  font-size: 16px;
+}
+
+.status-badge {
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  padding: 6px 8px;
+  border-radius: 999px;
+  background: #eef2ff;   /* default */
+  color: #374151;
+  border: 1px solid #e5e7eb;
+}
+
+.card-body .pair {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  margin: 6px 0;
+}
+
+.pair .k {
+  color: #6b7280;
+}
+
+.pair .v {
+  color: #111827;
+  font-weight: 500;
+}
+
+.card-actions {
+  margin-top: 8px;
+}
+
+/* details panel content */
+.details-body {
+  max-width: 720px;
+}
+
+.details-title {
+  margin: 0 30px 20px 0;
+  font-weight: 700;
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.row-item {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  align-items: baseline;
+  padding: 10px 0;
+  border-bottom: 1px dashed #edf0f3;
+}
+
+.row-item .rk {
+  color: #6b7280;
+  font-weight: 600;
+}
+
+.row-item .rv {
+  color: #111827;
+}
+
+/* close button on details */
+.close-btn {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 50%;
+  background: #ef4444;
+  color: #fff;
+  font-size: 20px;
+  line-height: 26px;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 3px 8px rgba(239, 68, 68, 0.35);
+}
+
+.close-btn:hover {
+  filter: brightness(0.95);
+}
+
+/* little utilities */
+.ml-8 { margin-left: 8px; }
+.mr-10 { margin-right: 10px; }
+.form-inline-gap { margin-bottom: 10px; }
+
+/* responsive: on small screens show the details as a slide-over */
+@media (max-width: 768px) {
+  .split-shell {
+    position: relative;
   }
-
-  function toggleAddress(useSaved) {
-    const userNameInput = document.getElementById("claimerName");
-    const contactNumberInput = document.getElementById("contactNumber");
-    const addressInput = document.getElementById("addressInput");
-    const googlePlusCodeInput = document.getElementById("googlePlusCode");
-
-    if (useSaved) {
-      userNameInput.value = /*[[${session.Users.username}]]*/ '';
-      userNameInput.readOnly = true;
-
-      contactNumberInput.value = /*[[${session.Users.phoneNumber}]]*/ '';
-      contactNumberInput.readOnly = true;
-
-      addressInput.value = /*[[${session.Users.address}]]*/ '';
-      addressInput.readOnly = true;
-
-      googlePlusCodeInput.value = /*[[${session.Users.googlePlusCode}]]*/ '';
-      googlePlusCodeInput.readOnly = true;
-    } else {
-      userNameInput.value = '';
-      userNameInput.readOnly = false;
-
-      contactNumberInput.value = '';
-      contactNumberInput.readOnly = false;
-
-      addressInput.value = '';
-      addressInput.readOnly = false;
-
-      googlePlusCodeInput.value = '';
-      googlePlusCodeInput.readOnly = false;
-    }
+  .details-pane {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    width: 0;
+    z-index: 1040; /* above content */
   }
-</script>
-</body>
-</html>
+  .split-shell.show-details .list-pane {
+    flex: 1 1 auto; /* keep full width under the slide-over */
+  }
+  .split-shell.show-details .details-pane {
+    width: 100%;
+  }
+}
+
+/* ---------------- Improved Claim Form Modal ---------------- */
+
+/* center modal using flex */
+#claimModal.modal.in {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  animation: fadeInBg 0.25s ease;
+}
+
+/* remove BS3's default transform */
+#claimModal.modal.fade .modal-dialog,
+#claimModal.modal.in .modal-dialog {
+  -webkit-transform: none !important;
+  transform: none !important;
+}
+
+/* dialog */
+#claimModal .modal-dialog {
+  margin: 0 !important;
+  width: 520px; /* slightly narrower */
+  max-width: 92vw;
+  animation: scaleIn 0.25s ease;
+}
+
+/* modal content */
+#claimModal .modal-content {
+  border-radius: 14px; /* softer rounded corners */
+  overflow: hidden;
+  border: none;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.25);
+  max-height: 86vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* header */
+#claimModal .modal-header {
+  background: #1e88e5;
+  color: #fff;
+  border-bottom: none;
+  padding: 14px 22px;
+}
+#claimModal .modal-title {
+  font-weight: 600;
+  font-size: 17px;
+}
+#claimModal .close {
+  color: #fff;
+  opacity: 0.9;
+  font-size: 24px;
+}
+#claimModal .close:hover {
+  opacity: 1;
+}
+
+/* body */
+#claimModal .modal-body {
+  padding: 20px 24px;
+  background: #fafafa;
+  overflow-y: auto;
+}
+
+/* form styling */
+#claimModal .form-group {
+  margin-bottom: 16px;
+}
+#claimModal .form-group label {
+  font-weight: 600;
+  margin-bottom: 8px;
+  display: block;
+  color: #333;
+  font-size: 14px;
+}
+
+/* inputs with more rounded corners */
+#claimModal .form-control {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 20px; /* more rounded */
+  font-size: 14px;
+  background: #fff;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+#claimModal .form-control:focus {
+  border-color: #1e88e5;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.2);
+}
+
+/* radio buttons */
+#claimModal .form-inline-gap {
+  margin-bottom: 16px;
+  padding: 10px 14px;
+  background: #eef6ff;
+  border-radius: 12px; /* more rounded */
+  border: 1px solid #d0e7ff;
+}
+#claimModal .form-inline-gap label {
+  margin-right: 15px;
+  font-weight: 500;
+  color: #333;
+  font-size: 14px;
+}
+
+/* smaller submit button */
+#claimModal button[type="submit"] {
+  display: inline-block;
+  width: auto;               /* not full width */
+  padding: 10px 24px;
+  background: #1e88e5;
+  border: none;
+  border-radius: 20px;       /* pill shape */
+  color: #fff;
+  font-weight: 600;
+  font-size: 14px;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+#claimModal button[type="submit"]:hover {
+  background: #1565c0;
+  transform: translateY(-1px);
+}
+#claimModal button[type="submit"]:active {
+  transform: translateY(0);
+}
+
+/* responsive modal width */
+@media (max-width: 767px) {
+  #claimModal .modal-dialog {
+    width: 96vw;
+  }
+}
+
+/* animations */
+@keyframes fadeInBg {
+  from { background-color: rgba(0,0,0,0); }
+  to   { background-color: rgba(0,0,0,0.5); }
+}
+@keyframes scaleIn {
+  from { transform: scale(0.9); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+/* ---------------- Compact Side-by-Side Claim Form ---------------- */
+
+/* form group layout */
+#claimModal .form-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+/* labels */
+#claimModal .form-group label {
+  flex: 0 0 140px;        /* fixed width column */
+  text-align: right;      /* align text to right */
+  margin: 0;
+  padding-right: 12px;
+  font-weight: 600;
+  font-size: 14px;
+  color: #333;
+}
+
+/* inputs */
+#claimModal .form-group .form-control {
+  flex: 1;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 20px; /* rounded corners */
+  font-size: 14px;
+  background: #fff;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+#claimModal .form-group .form-control:focus {
+  border-color: #1e88e5;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.2);
+}
+
+/* radio buttons row */
+#claimModal .form-inline-gap {
+  display: flex;
+  align-items: center;
+  margin-bottom: 18px;
+  padding: 10px 14px;
+  background: #eef6ff;
+  border-radius: 12px;
+  border: 1px solid #d0e7ff;
+}
+#claimModal .form-inline-gap label {
+  margin: 0 15px 0 0;
+  font-weight: 500;
+  color: #333;
+  font-size: 14px;
+  text-align: left;
+}
+
+/* center submit button */
+#claimModal .form-actions {
+  text-align: center;
+  margin-top: 20px;
+}
+#claimModal button[type="submit"] {
+  padding: 10px 26px;
+  background: #1e88e5;
+  border: none;
+  border-radius: 22px;
+  color: #fff;
+  font-weight: 600;
+  font-size: 14px;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+#claimModal button[type="submit"]:hover {
+  background: #1565c0;
+  transform: translateY(-1px);
+}
+#claimModal button[type="submit"]:active {
+  transform: translateY(0);
+}
+/* Controls Bar */
+.controls-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 15px;
+  align-items: center;
+}
+
+/* Search Box */
+.search-box {
+  position: relative;
+  flex: 1;
+  min-width: 200px;
+}
+.search-box input {
+  width: 100%;
+  padding: 8px 30px 8px 12px;
+  border-radius: 20px;
+  border: 1px solid #d1d5db;
+  font-size: 14px;
+}
+.search-box .search-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px;
+  color: #555;
+}
+
+/* Filters & Sort */
+.controls-bar select {
+  padding: 8px 12px;
+  border-radius: 20px;
+  border: 1px solid #d1d5db;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+  gap: 6px;
+}
+.pagination button {
+  border: none;
+  background: #e5e7eb;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.pagination button.active {
+  background: #1e88e5;
+  color: #fff;
+  font-weight: 600;
+}
+.pagination button:hover {
+  background: #1565c0;
+  color: #fff;
+}
+

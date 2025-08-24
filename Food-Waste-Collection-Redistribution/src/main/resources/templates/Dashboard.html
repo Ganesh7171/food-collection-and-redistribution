@@ -1,71 +1,73 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Welcome Screen - Food Waste Collection</title>
-    <link rel="stylesheet" th:href="@{/css/Dashboard.css}" />
-    <link rel="stylesheet" th:href="@{/css/loader.css}" />
+  <meta charset="UTF-8">
+  <title>Dashboard - Food Waste Collection</title>
+  <!-- Common theme -->
+  <link rel="stylesheet" th:href="@{/css/Dashboard.css}" />
+  <link rel="stylesheet" th:href="@{/css/loader.css}" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <!-- Loader Animation -->
-    <div id="loader-wrapper">
-        <div id="loader">🍱</div>
-    </div>
+  <!-- Loader -->
+  <div id="loader-wrapper">
+    <div id="loader">🍱</div>
+  </div>
 
-    <div class="header">
-        <h1 th:text="'Welcome ' + ${session.Users.username}">WELCOME GUEST !!</h1>
-        <div class="header-icon">
-            <button>🔔</button>
-        </div>
-    </div>
+  <!-- Common Header -->
+  <div th:replace="fragments/header :: app-header"></div>
 
-    <div class="container">
-        <div class="sidebar">
-            <ul>
-                <li><a href="/fwc/listAllDonations">All Donations</a></li>
-                <li><a href="/fwc/listMyDonations">My Donations</a></li>
-                <li><a href="/fwc/DonationClaimForm">Claim Form</a></li>
-                <li><a href="/fwc/donationPage">List F.C</a></li>
-                 <li><a href="/claims/MyClaimRequests">My Claims</a></li>
-            </ul>
-        </div>
+  <!-- Common Sidebar -->
+  <div th:replace="fragments/sidebar :: app-sidebar"></div>
 
-        <div class="main-content">
-            <section>
-                <h2>F.D</h2>
-            </section>
-            <section>
-                <h2>Total Count</h2>
-            </section>
-            <section>
-                <h2>Track F.D</h2>
-            </section>
-        </div>
-    </div>
+  <!-- Page Content -->
+  <div id="pageContent" class="page-content">
+    <main class="main-container">
+      <section class="card">
+        <h2>Dashboard</h2>
+        <p>Welcome to your dashboard. Here you can track food donations and requests.</p>
+      </section>
+      <section class="card">
+        <h2>Total Count</h2>
+        <p>Show analytics or total donations here.</p>
+      </section>
+      <section class="card">
+        <h2>Track F.D</h2>
+        <p>Tracking and claim requests will be shown here.</p>
+      </section>
+    </main>
 
-    <div class="admin-section">
-        <h3>Admin</h3>
-    </div>
+    <!-- Common Footer -->
+    <div th:replace="fragments/footer :: app-footer"></div>
+  </div>
 
-    <script>
-        // Hide loader after full load
-        window.addEventListener('load', function () {
-            const loader = document.getElementById('loader-wrapper');
-            loader.style.opacity = '0';
-            setTimeout(() => loader.style.display = 'none', 500);
-        });
+  <!-- Scripts -->
+  <script>
+    // Loader
+    window.addEventListener('load', function () {
+      const loader = document.getElementById('loader-wrapper');
+      loader.style.opacity = '0';
+      setTimeout(() => loader.style.display = 'none', 500);
+    });
 
-        // Show loader when navigating
-        document.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', function (e) {
-                const href = this.getAttribute('href');
-                if (href && !href.startsWith('#') && !href.startsWith('javascript')) {
-                    document.getElementById('loader-wrapper').style.display = 'flex';
-                    document.getElementById('loader-wrapper').style.opacity = '1';
-                }
-            });
-        });
-    </script>
+    // Show loader on navigation
+    document.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', function () {
+        const href = this.getAttribute('href');
+        if (href && !href.startsWith('#') && !href.startsWith('javascript')) {
+          const loader = document.getElementById('loader-wrapper');
+          loader.style.display = 'flex';
+          loader.style.opacity = '1';
+        }
+      });
+    });
+
+    // Sidebar toggle
+    function toggleNav() {
+      document.getElementById('sideNav').classList.toggle('open');
+      document.getElementById('pageContent').classList.toggle('shifted');
+    }
+  </script>
 </body>
 </html>
