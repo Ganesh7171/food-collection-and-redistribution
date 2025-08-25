@@ -1,0 +1,9 @@
+<header class="site-header" th:fragment="app-header">
+  <button class="icon-btn hamburger-btn" onclick="toggleNav()">☰</button>
+  <h1 class="welcome-text">
+    Welcome, <span class="username" th:text="${session.Users.username}">Guest</span>
+  </h1>
+  <div class="header-right">
+    <button class="icon-btn">🔔</button>
+  </div>
+</header>

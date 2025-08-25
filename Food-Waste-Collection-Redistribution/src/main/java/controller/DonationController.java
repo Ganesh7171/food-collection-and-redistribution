@@ -72,7 +72,7 @@ public class DonationController {
 	    Pageable pageable = (Pageable) PageRequest.of(page, size,
 	            order.equals("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending());
 
-	    Page<Donation> donations = donationServiceImp.listAllDonations(search, status, meal, pageable);
+	    Page<Donation> donations = donationServiceImp.listAllDonations(search, status, meal, (org.springframework.data.domain.Pageable) pageable);
 
 	    model.addAttribute("donations", donations.getContent()); // list for cards
 	    model.addAttribute("currentPage", page);

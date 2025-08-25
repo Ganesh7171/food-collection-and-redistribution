@@ -1,0 +1,102 @@
+/* ===========================
+   Sidebar Styles
+   =========================== */
+
+/* Side Navigation Drawer */
+.side-nav {
+  height: 100%;
+  width: 0; /* hidden by default */
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: #1e88e5;
+  overflow-x: hidden;
+  transition: width 0.3s ease;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+}
+
+.side-nav.open {
+  width: 250px; /* expanded width */
+}
+
+/* Sidebar Header */
+.side-nav-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  color: #fff;
+  background: #1565c0;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+}
+
+.side-nav-header h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 26px;
+  color: #fff;
+  cursor: pointer;
+  line-height: 1;
+}
+
+/* Sidebar Links */
+.side-nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex-grow: 1; /* fill available space */
+}
+
+.side-nav ul li {
+  padding: 12px 20px;
+}
+
+.side-nav ul li a {
+  color: #fff;
+  text-decoration: none;
+  display: block;
+  font-size: 16px;
+  transition: background 0.2s ease;
+}
+
+.side-nav ul li a:hover {
+  background: rgba(255,255,255,0.2);
+  border-radius: 6px;
+}
+
+/* Sidebar Footer */
+.side-nav-footer {
+  text-align: center;
+  padding: 12px 0;
+  color: #fff;
+  font-size: 13px;
+  border-top: 1px solid rgba(255,255,255,0.2);
+}
+
+/* Page Content Shift (when sidebar open) */
+.page-content {
+  transition: margin-left 0.3s ease;
+  padding: 20px;
+}
+
+.page-content.shifted {
+  margin-left: 250px; /* same as .side-nav.open width */
+}
+
+/* Responsive Handling */
+@media (max-width: 768px) {
+  .side-nav.open {
+    width: 200px;
+  }
+  .page-content.shifted {
+    margin-left: 200px;
+  }
+}

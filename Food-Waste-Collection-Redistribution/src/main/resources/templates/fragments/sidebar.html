@@ -1,0 +1,29 @@
+
+
+<head>
+ <link rel="stylesheet" th:href="@{/css/sidebar.css}" />
+   <script th:src="@{/js/sidebar.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/theme.css}" />
+</head>
+
+<nav id="sideNav" class="side-nav" th:fragment="app-sidebar">
+
+
+
+
+  <div class="side-nav-header">
+    <h2>Menu</h2>
+    <button class="close-btn" onclick="toggleNav()">&times;</button>
+  </div>
+  <ul>
+    <li><a href="/fwc/listAllDonations">All Donations</a></li>
+    <li><a href="/fwc/listMyDonations">My Donations</a></li>
+    <li><a href="/claims/MyApprovals">My Approvals</a></li>
+    <li><a href="/fwc/donationPage">List F.C</a></li>
+    <li><a href="/claims/MyClaimRequests">My Claims</a></li>
+  </ul>
+  <div class="side-nav-footer">
+    <p>&copy; 2025 Food Waste Collection</p>
+  </div>
+</nav>
+
