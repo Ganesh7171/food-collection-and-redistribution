@@ -1,11 +1,12 @@
 package controller;
 
-import java.awt.print.Pageable;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,7 +27,7 @@ import services.DonationServiceImp;
 public class DonationController {
 
 	@Autowired
-	DonationServiceImp donationServiceImp;
+	DonationServiceImp donationService;
 	
 	@GetMapping("/Db")
     public String showDashboard() {
@@ -38,7 +39,7 @@ public class DonationController {
 		
 			Users user =(Users)session.getAttribute("Users");
 			newDonation.setUser(user);
-		    donationServiceImp.addNewDonation(newDonation);
+		    donationService.addNewDonation(newDonation);
 		    
 			return "redirect:/fwc/donationSuccess/" + newDonation.getDonationId();	
 	}
@@ -58,26 +59,33 @@ public class DonationController {
 	 * model.addAttribute("donations", donationObject);
 	 * model.addAttribute("claimForm", new Claims()); return "ShowAllDonations"; }
 	 */
-	@GetMapping("/fwc/listAllDonations")
+
+	@GetMapping("/listAllDonations")
 	public String listAllDonations(
 	        @RequestParam(defaultValue = "0") int page,
 	        @RequestParam(defaultValue = "6") int size,
 	        @RequestParam(defaultValue = "donationId") String sortBy,
 	        @RequestParam(defaultValue = "desc") String order,
+	        @RequestParam(required = false) String search,
 	        @RequestParam(required = false) String status,
 	        @RequestParam(required = false) String meal,
-	        @RequestParam(required = false) String search,
-	        Model model) {
+	        Model model
+	) {
+	    Page<Donation> donationPage = donationService.listAllDonations(
+	            search, status, meal, sortBy, order, page, size
+	    );
 
-	    Pageable pageable = (Pageable) PageRequest.of(page, size,
-	            order.equals("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending());
-
-	    Page<Donation> donations = donationServiceImp.listAllDonations(search, status, meal, (org.springframework.data.domain.Pageable) pageable);
-
-	    model.addAttribute("donations", donations.getContent()); // list for cards
+	    model.addAttribute("donations", donationPage.getContent());
 	    model.addAttribute("currentPage", page);
-	    model.addAttribute("totalPages", donations.getTotalPages());
-	    model.addAttribute("totalItems", donations.getTotalElements());
+	    model.addAttribute("totalPages", donationPage.getTotalPages());
+
+	    // pass filters back to view
+	    model.addAttribute("search", search);
+	    model.addAttribute("status", status);
+	    model.addAttribute("meal", meal);
+	    model.addAttribute("sortBy", sortBy);
+	    model.addAttribute("order", order);
+
 	    return "ShowAllDonations";
 	}
 
@@ -87,7 +95,7 @@ public class DonationController {
 		
 		Users user = (Users) session.getAttribute("Users");
 		System.out.println(user.getUserId());
-		List<Donation> donations = donationServiceImp.getDonationsByUserId(user.getUserId());
+		List<Donation> donations = donationService.getDonationsByUserId(user.getUserId());
 		model.addAttribute("donations",donations);
 	
 		return "MyDonations";

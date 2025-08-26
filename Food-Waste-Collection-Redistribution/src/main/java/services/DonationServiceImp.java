@@ -1,10 +1,12 @@
 package services;
 
-import java.awt.print.Pageable;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import entities.Donation;
@@ -13,10 +15,11 @@ import repositories.DonationRepository;
 
 @Service
 @Transactional
-public abstract class DonationServiceImp implements DonationService {
+public  class DonationServiceImp implements DonationService {
 
 	@Autowired
 	DonationRepository donationRepository;
+	
 	@Override
 	public Donation getDonationById(int i) {
 		
@@ -30,20 +33,36 @@ public abstract class DonationServiceImp implements DonationService {
 		return null;
 	}
 
-	 public Page<Donation> listAllDonations(String search, String status, String meal, org.springframework.data.domain.Pageable pageable) {
-	        if (search != null && !search.isEmpty()) {
-	            return donationRepository.findByDonationIdContaining(search, (org.springframework.data.domain.Pageable) pageable);
-	        } 
-	        else if (status != null && !status.isEmpty()) {
-	            return donationRepository.findByStatus(status, (org.springframework.data.domain.Pageable) pageable);
-	        } 
-	        else if (meal != null && !meal.isEmpty()) {
-	            return donationRepository.findByMealType(meal, pageable);
-	        } 
-	        else {
+	@Override
+	public Page<Donation> listAllDonations(
+	        String search,
+	        String status,
+	        String meal,
+	        String sortBy,
+	        String order,
+	        int page,
+	        int size
+	) {
+	    Sort sort = order.equalsIgnoreCase("asc")
+	            ? Sort.by(sortBy).ascending()
+	            : Sort.by(sortBy).descending();
+
+	    Pageable pageable = PageRequest.of(page, size, sort);
+
+	    // Example: You can expand this with custom filtering
+	    if (search != null && !search.isEmpty()) {
+	        try {
+	            int id = Integer.parseInt(search);
+	            return donationRepository.findByDonationIdContaining(id, pageable);
+	        } catch (NumberFormatException e) {
+	            // fallback when search is not a number
 	            return donationRepository.findAll(pageable);
 	        }
 	    }
+
+	    return donationRepository.findAll(pageable);
+	}
+
 	
 
 	@Override
@@ -65,6 +84,16 @@ public abstract class DonationServiceImp implements DonationService {
 		
 		return donationRepository.findByUserUserId(id);
 	}
+
+	@Override
+	public Page<Donation> listAllDonations(String search, String status, String meal,
+			java.awt.print.Pageable pageable) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+
 
  
 

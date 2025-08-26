@@ -17,8 +17,7 @@ import entities.Claims;
 import entities.Users;
 import jakarta.servlet.http.HttpSession;
 import services.ClaimsServiceImp;
-import services.ClaimsServiceImp;
-import services.DonationServiceImp;
+import services.DonationService;
 
 
 @Controller
@@ -27,8 +26,10 @@ public class ClaimsController {
 
 	@Autowired
 	ClaimsServiceImp claimsServiceImp;
-	@Autowired
-	DonationServiceImp donationServiceImp;
+	
+	/*
+	 * @Autowired DonationService donationService;
+	 */
 	
 	@PostMapping("/submitClaim")
 	@ResponseBody

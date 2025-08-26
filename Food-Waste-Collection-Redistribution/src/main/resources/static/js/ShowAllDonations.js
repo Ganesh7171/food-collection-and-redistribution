@@ -1,80 +1,136 @@
 console.log("ShowAllDonations.js loaded ✅");
 
-const cardsContainer = document.getElementById("cards");
-const paginationContainer = document.getElementById("pagination");
-const searchInput = document.getElementById("searchInput");
-const statusFilter = document.getElementById("statusFilter");
-const mealFilter = document.getElementById("mealFilter");
-const sortBy = document.getElementById("sortBy");
+/* ==========================
+   Sidebar Toggle
+========================== */
+function toggleNav() {
+  const nav = document.getElementById("sideNav");
+  const content = document.getElementById("pageContent");
+  const scrim = document.getElementById("scrim");
 
-let allCards = [];
-let currentPage = 1;
-const itemsPerPage = 6;
-
-// Collect cards into array
-function initCards() {
-  allCards = Array.from(cardsContainer.querySelectorAll(".donation-card"));
-  renderCards();
+  const isOpen = nav.classList.toggle("open");
+  if (content) content.classList.toggle("shifted", isOpen);
+  if (scrim) scrim.classList.toggle("show", isOpen);
 }
 
-// Render filtered, sorted, paginated cards
-function renderCards() {
-  let filtered = allCards;
+// Close sidebar on ESC
+document.addEventListener("keydown", function (e) {
+  if (e.key === "Escape") {
+    const nav = document.getElementById("sideNav");
+    if (nav.classList.contains("open")) toggleNav();
+  }
+});
 
-  // Search by ID
-  const query = searchInput.value.trim().toLowerCase();
-  if (query) {
-    filtered = filtered.filter(c =>
-      (c.dataset.donationId || "").toLowerCase().includes(query)
-    );
+/* ==========================
+   Claim Modal
+========================== */
+function openClaimPopup(donationId) {
+  document.getElementById("donationIdField").value = donationId;
+  $("#claimModal").modal("show");
+}
+
+/* ==========================
+   Details Panel
+========================== */
+function showDetailsFromCard(cardEl) {
+  const d = cardEl.dataset;
+
+  const username = d.username && d.username !== "null" ? d.username : "N/A";
+  const mobile = d.mobile && d.mobile !== "null" ? d.mobile : "N/A";
+  const address = d.address && d.address !== "null" ? d.address : "N/A";
+  const gpc =
+    d.googlePlusCode && d.googlePlusCode !== "null" ? d.googlePlusCode : "N/A";
+
+  // Action button logic
+  let buttonHtml = "";
+  if (d.status === "CLAIMED") {
+    buttonHtml = `
+      <button class="modern-btn disabled-btn" disabled>
+        <i class="fas fa-check-circle"></i> Request Already Placed
+      </button>`;
+  } else {
+    buttonHtml = `
+      <button class="modern-btn primary-btn"
+              type="button"
+              onclick="event.stopPropagation();openClaimPopup('${d.donationId}')">
+        <i class="fas fa-hand-paper"></i> Place Request
+      </button>`;
   }
 
-  // Filter by status
-  if (statusFilter.value) {
-    filtered = filtered.filter(c => c.dataset.status === statusFilter.value);
-  }
+  // Build HTML
+  const html = `
+    <h3 class="details-title">Donation #${d.donationId}</h3>
+    <div class="details-grid">
+      <div class="row-item"><div class="rk">Meal</div><div class="rv">${d.mealType || "-"}</div></div>
+      <div class="row-item"><div class="rk">Status</div><div class="rv">${d.status}</div></div>
+      <div class="row-item"><div class="rk">Claim Time</div><div class="rv">${d.claimTime || "-"}</div></div>
+      <div class="row-item"><div class="rk">Address</div><div class="rv">${address}</div></div>
+      <div class="row-item">
+        <div class="rk">Google Plus Code</div>
+        <div class="rv">
+          ${gpc}
+          ${
+            gpc && gpc !== "N/A"
+              ? `<a class="map-link" target="_blank"
+                   href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                     gpc
+                   )}">
+                  View on Map
+                 </a>`
+              : ""
+          }
+        </div>
+      </div>
+      <div class="row-item"><div class="rk">User</div><div class="rv">${username}</div></div>
+      <div class="row-item"><div class="rk">Mobile</div><div class="rv">${mobile}</div></div>
+    </div>
+    <div class="details-actions">
+      ${buttonHtml}
+    </div>
+  `;
 
-  // Filter by meal
-  if (mealFilter.value) {
-    filtered = filtered.filter(c => c.dataset.mealType === mealFilter.value);
-  }
+  // Inject & show
+  document.getElementById("detailsBody").innerHTML = html;
+  const pane = document.getElementById("detailsPane");
+  const content = document.getElementById("pageContent");
+  pane.setAttribute("aria-hidden", "false");
+  pane.classList.add("open");
+  content.classList.add("shrink");
+}
 
-  // Sort
-  filtered.sort((a, b) => {
-    const da = new Date(a.dataset.claimTime || 0);
-    const db = new Date(b.dataset.claimTime || 0);
-    return sortBy.value === "oldest" ? da - db : db - da;
+// Close details panel
+function closeDetails() {
+  const pane = document.getElementById("detailsPane");
+  const content = document.getElementById("pageContent");
+  pane.setAttribute("aria-hidden", "true");
+  pane.classList.remove("open");
+  content.classList.remove("shrink");
+  document.getElementById("detailsBody").innerHTML = "";
+}
+
+
+/* ==========================
+   Claim Form Submit
+========================== */
+$(function () {
+  $("#claimForm").submit(function (e) {
+    e.preventDefault();
+    const formData = $(this).serialize();
+
+    $.post("/claims/submitClaim", formData, function (response) {
+      $("#claimModal").modal("hide");
+      alert(response);
+      location.reload();
+    }).fail(function (xhr) {
+      $("#claimModal").modal("hide");
+      alert("An error occurred: " + xhr.responseText);
+    });
   });
+});
 
-  // Pagination
-  const totalPages = Math.ceil(filtered.length / itemsPerPage) || 1;
-  if (currentPage > totalPages) currentPage = totalPages;
-  const start = (currentPage - 1) * itemsPerPage;
-  const end = start + itemsPerPage;
-  const pageItems = filtered.slice(start, end);
 
-  // Render
-  cardsContainer.innerHTML = "";
-  pageItems.forEach(c => cardsContainer.appendChild(c));
-
-  // Pagination controls
-  paginationContainer.innerHTML = "";
-  for (let i = 1; i <= totalPages; i++) {
-    const btn = document.createElement("button");
-    btn.textContent = i;
-    btn.className = "btn btn-sm " + (i === currentPage ? "btn-primary" : "btn-default");
-    btn.style.margin = "0 4px";
-    btn.onclick = () => { currentPage = i; renderCards(); };
-    paginationContainer.appendChild(btn);
-  }
-
-  console.log(`Rendering page ${currentPage}/${totalPages}, ${filtered.length} results`);
+function openClaimPopup(donationId) {
+  closeDetails(); // auto close side panel
+  document.getElementById("donationIdField").value = donationId;
+  $("#claimModal").modal("show");
 }
-
-// Event listeners
-[searchInput, statusFilter, mealFilter, sortBy].forEach(el =>
-  el.addEventListener("input", () => { currentPage = 1; renderCards(); })
-);
-
-// Init when DOM ready
-document.addEventListener("DOMContentLoaded", initCards);

@@ -16,7 +16,7 @@ public interface DonationRepository extends JpaRepository<Donation,Integer> {
 	
 	List<Donation> findByUserUserId(int userId);
 
-	Page<Donation> findByDonationIdContaining(String search, Pageable pageable);
+	Page<Donation> findByDonationIdContaining(int id, Pageable pageable);
 
 	Page<Donation> findAll(Pageable pageable);
 

@@ -1,490 +1,642 @@
-/* page shell */
-body {
-  background: #f5f7fa;
-}
-
-.page-header {
-  margin: 10px 0 20px;
-}
-
-.page-title {
+/* ===== Reset ===== */
+html, body {
   margin: 0;
-  font-weight: 600;
+  padding: 0;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: #f5f7fa;
+  color: #333;
 }
 
-/* flex split layout */
-.split-shell {
-  display: flex;
-  align-items: stretch;
-  min-height: 100vh;
-  overflow: hidden;
-  background: transparent;
-}
-
-/* left side (cards) */
-.list-pane {
-  flex: 1 1 auto;
-  padding: 20px 24px;
-  transition: flex-basis 0.35s ease, width 0.35s ease, padding 0.2s ease;
-}
-
-/* right side (details) */
-.details-pane {
-  position: relative;
-  width: 0;
-  background: #ffffff;
-  border-left: 1px solid #e5e7eb;
-  box-shadow: -8px 0 16px rgba(0, 0, 0, 0.06);
-  overflow: hidden;
-  padding: 24px;
-  transform: translateX(20px);
-  opacity: 0;
-  transition: width 0.35s ease, transform 0.35s ease, opacity 0.35s ease;
-}
-
-.split-shell.show-details .list-pane {
-  flex: 0 0 50%;
-}
-
-.split-shell.show-details .details-pane {
-  width: 50%;
-  transform: translateX(0);
-  opacity: 1;
-}
-
-/* cards grid */
-.cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 18px;
-}
-
-/* card look */
-.donation-card {
-  background: #ffffff;
-  border: 1px solid #e6e8eb;
-  border-radius: 12px;
-  padding: 14px 14px 12px;
-  cursor: pointer;
-  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
-  transition: transform 0.18s ease, box-shadow 0.18s ease;
-  min-height: 170px; /* gives a neat square-ish look */
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.donation-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 18px rgba(16, 24, 40, 0.12);
-}
-
-.card-header {
+/* ===== Header ===== */
+.site-header {
+  position: sticky;
+  top: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 8px;
-}
-
-.meal-type {
-  font-weight: 600;
-  color: #1f2937;
-  font-size: 16px;
-}
-
-.status-badge {
-  font-size: 11px;
-  font-weight: 600;
-  line-height: 1;
-  padding: 6px 8px;
-  border-radius: 999px;
-  background: #eef2ff;   /* default */
-  color: #374151;
-  border: 1px solid #e5e7eb;
-}
-
-.card-body .pair {
-  display: flex;
-  justify-content: space-between;
-  font-size: 13px;
-  margin: 6px 0;
-}
-
-.pair .k {
-  color: #6b7280;
-}
-
-.pair .v {
-  color: #111827;
-  font-weight: 500;
-}
-
-.card-actions {
-  margin-top: 8px;
-}
-
-/* details panel content */
-.details-body {
-  max-width: 720px;
-}
-
-.details-title {
-  margin: 0 30px 20px 0;
-  font-weight: 700;
-}
-
-.details-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 10px;
-}
-
-.row-item {
-  display: grid;
-  grid-template-columns: 140px 1fr;
-  align-items: baseline;
-  padding: 10px 0;
-  border-bottom: 1px dashed #edf0f3;
-}
-
-.row-item .rk {
-  color: #6b7280;
-  font-weight: 600;
-}
-
-.row-item .rv {
-  color: #111827;
-}
-
-/* close button on details */
-.close-btn {
-  position: absolute;
-  top: 8px;
-  right: 10px;
-  width: 28px;
-  height: 28px;
-  border: none;
-  border-radius: 50%;
-  background: #ef4444;
-  color: #fff;
-  font-size: 20px;
-  line-height: 26px;
-  text-align: center;
-  cursor: pointer;
-  box-shadow: 0 3px 8px rgba(239, 68, 68, 0.35);
-}
-
-.close-btn:hover {
-  filter: brightness(0.95);
-}
-
-/* little utilities */
-.ml-8 { margin-left: 8px; }
-.mr-10 { margin-right: 10px; }
-.form-inline-gap { margin-bottom: 10px; }
-
-/* responsive: on small screens show the details as a slide-over */
-@media (max-width: 768px) {
-  .split-shell {
-    position: relative;
-  }
-  .details-pane {
-    position: fixed;
-    top: 0;
-    right: 0;
-    height: 100vh;
-    width: 0;
-    z-index: 1040; /* above content */
-  }
-  .split-shell.show-details .list-pane {
-    flex: 1 1 auto; /* keep full width under the slide-over */
-  }
-  .split-shell.show-details .details-pane {
-    width: 100%;
-  }
-}
-
-/* ---------------- Improved Claim Form Modal ---------------- */
-
-/* center modal using flex */
-#claimModal.modal.in {
-  display: flex !important;
-  align-items: center;
-  justify-content: center;
-  animation: fadeInBg 0.25s ease;
-}
-
-/* remove BS3's default transform */
-#claimModal.modal.fade .modal-dialog,
-#claimModal.modal.in .modal-dialog {
-  -webkit-transform: none !important;
-  transform: none !important;
-}
-
-/* dialog */
-#claimModal .modal-dialog {
-  margin: 0 !important;
-  width: 520px; /* slightly narrower */
-  max-width: 92vw;
-  animation: scaleIn 0.25s ease;
-}
-
-/* modal content */
-#claimModal .modal-content {
-  border-radius: 14px; /* softer rounded corners */
-  overflow: hidden;
-  border: none;
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.25);
-  max-height: 86vh;
-  display: flex;
-  flex-direction: column;
-}
-
-/* header */
-#claimModal .modal-header {
+  padding: 12px 16px;
   background: #1e88e5;
   color: #fff;
-  border-bottom: none;
-  padding: 14px 22px;
-}
-#claimModal .modal-title {
-  font-weight: 600;
-  font-size: 17px;
-}
-#claimModal .close {
-  color: #fff;
-  opacity: 0.9;
-  font-size: 24px;
-}
-#claimModal .close:hover {
-  opacity: 1;
+  box-shadow: 0 2px 6px rgba(0,0,0,.1);
+  z-index: 1500;
 }
 
-/* body */
-#claimModal .modal-body {
-  padding: 20px 24px;
-  background: #fafafa;
+.icon-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #fff;
+  font-size: 24px;
+  width: 44px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+}
+
+.header-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
+  flex: 1;
+}
+
+.header-right-spacer {
+  width: 44px;
+}
+
+/* ===== Sidebar ===== */
+.side-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 0;
+  overflow-x: hidden;
+  background: #1e88e5;
+  color: #fff;
+  transition: width .3s ease;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+}
+
+.side-nav.open {
+  width: 250px;
+}
+
+.side-nav-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: #1565c0;
+  border-bottom: 1px solid rgba(255,255,255,.2);
+}
+
+.side-nav-header h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.side-nav .close-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.side-nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 8px 0;
+  flex: 1;
   overflow-y: auto;
 }
 
-/* form styling */
-#claimModal .form-group {
-  margin-bottom: 16px;
-}
-#claimModal .form-group label {
-  font-weight: 600;
-  margin-bottom: 8px;
+.side-nav a {
   display: block;
-  color: #333;
-  font-size: 14px;
-}
-
-/* inputs with more rounded corners */
-#claimModal .form-control {
-  width: 100%;
-  padding: 10px 12px;
-  border: 1px solid #d1d5db;
-  border-radius: 20px; /* more rounded */
-  font-size: 14px;
-  background: #fff;
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-#claimModal .form-control:focus {
-  border-color: #1e88e5;
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.2);
-}
-
-/* radio buttons */
-#claimModal .form-inline-gap {
-  margin-bottom: 16px;
-  padding: 10px 14px;
-  background: #eef6ff;
-  border-radius: 12px; /* more rounded */
-  border: 1px solid #d0e7ff;
-}
-#claimModal .form-inline-gap label {
-  margin-right: 15px;
-  font-weight: 500;
-  color: #333;
-  font-size: 14px;
-}
-
-/* smaller submit button */
-#claimModal button[type="submit"] {
-  display: inline-block;
-  width: auto;               /* not full width */
-  padding: 10px 24px;
-  background: #1e88e5;
-  border: none;
-  border-radius: 20px;       /* pill shape */
+  padding: 12px 20px;
   color: #fff;
-  font-weight: 600;
-  font-size: 14px;
-  transition: background 0.2s ease, transform 0.15s ease;
-}
-#claimModal button[type="submit"]:hover {
-  background: #1565c0;
-  transform: translateY(-1px);
-}
-#claimModal button[type="submit"]:active {
-  transform: translateY(0);
+  text-decoration: none;
+  font-size: 16px;
+  transition: background .2s ease;
 }
 
-/* responsive modal width */
-@media (max-width: 767px) {
-  #claimModal .modal-dialog {
-    width: 96vw;
-  }
+.side-nav a:hover {
+  background: rgba(255,255,255,.2);
+  border-radius: 6px;
 }
 
-/* animations */
-@keyframes fadeInBg {
-  from { background-color: rgba(0,0,0,0); }
-  to   { background-color: rgba(0,0,0,0.5); }
-}
-@keyframes scaleIn {
-  from { transform: scale(0.9); opacity: 0; }
-  to   { transform: scale(1); opacity: 1; }
-}
-
-/* ---------------- Compact Side-by-Side Claim Form ---------------- */
-
-/* form group layout */
-#claimModal .form-group {
-  display: flex;
-  align-items: center;
-  margin-bottom: 16px;
-}
-
-/* labels */
-#claimModal .form-group label {
-  flex: 0 0 140px;        /* fixed width column */
-  text-align: right;      /* align text to right */
-  margin: 0;
-  padding-right: 12px;
-  font-weight: 600;
-  font-size: 14px;
-  color: #333;
-}
-
-/* inputs */
-#claimModal .form-group .form-control {
-  flex: 1;
-  padding: 10px 12px;
-  border: 1px solid #d1d5db;
-  border-radius: 20px; /* rounded corners */
-  font-size: 14px;
-  background: #fff;
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-#claimModal .form-group .form-control:focus {
-  border-color: #1e88e5;
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.2);
-}
-
-/* radio buttons row */
-#claimModal .form-inline-gap {
-  display: flex;
-  align-items: center;
-  margin-bottom: 18px;
-  padding: 10px 14px;
-  background: #eef6ff;
-  border-radius: 12px;
-  border: 1px solid #d0e7ff;
-}
-#claimModal .form-inline-gap label {
-  margin: 0 15px 0 0;
-  font-weight: 500;
-  color: #333;
-  font-size: 14px;
-  text-align: left;
-}
-
-/* center submit button */
-#claimModal .form-actions {
+.side-nav-footer {
+  border-top: 1px solid rgba(255,255,255,.2);
   text-align: center;
-  margin-top: 20px;
-}
-#claimModal button[type="submit"] {
-  padding: 10px 26px;
-  background: #1e88e5;
-  border: none;
-  border-radius: 22px;
+  font-size: 13px;
+  padding: 10px;
   color: #fff;
-  font-weight: 600;
-  font-size: 14px;
-  transition: background 0.2s ease, transform 0.15s ease;
 }
-#claimModal button[type="submit"]:hover {
-  background: #1565c0;
-  transform: translateY(-1px);
+
+/* ===== Overlay ===== */
+.scrim {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.25);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .2s ease, visibility .2s ease;
+  z-index: 1800;
 }
-#claimModal button[type="submit"]:active {
-  transform: translateY(0);
+.scrim.show {
+  opacity: 1;
+  visibility: visible;
 }
-/* Controls Bar */
+@media (min-width: 992px) {
+  .scrim { display: none; }
+}
+
+/* ===== Controls (Search, Filter, Sort) ===== */
 .controls-bar {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  margin-bottom: 15px;
-  align-items: center;
+  margin: 15px;
+  background: #fff;
+  padding: 10px 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,.05);
 }
 
-/* Search Box */
-.search-box {
-  position: relative;
-  flex: 1;
-  min-width: 200px;
+/* ===== Cards ===== */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 15px;
+  padding: 15px;
 }
-.search-box input {
-  width: 100%;
-  padding: 8px 30px 8px 12px;
+
+.donation-card {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0,0,0,.1);
+  padding: 15px;
+  cursor: pointer;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.donation-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0,0,0,.15);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.status-badge {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 12px;
+  background: #eee;
+}
+
+.status-badge:contains("AVAILABLE") {
+  background: #c8e6c9;
+  color: #2e7d32;
+}
+.status-badge:contains("CLAIMED") {
+  background: #ffe0b2;
+  color: #e65100;
+}
+.status-badge:contains("EXPIRED") {
+  background: #ffcdd2;
+  color: #c62828;
+}
+
+.pair {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  margin: 4px 0;
+}
+
+.card-actions {
+  margin-top: 10px;
+  text-align: right;
+}
+
+/* ===== Pagination ===== */
+.pagination {
+  margin: 20px auto;
+  display: inline-flex;
+  list-style: none;
+  gap: 5px;
+}
+
+.pagination li a {
+  padding: 6px 12px;
+  border-radius: 6px;
+  background: #fff;
+  border: 1px solid #ddd;
+  color: #1e88e5;
+  text-decoration: none;
+  transition: all .2s ease;
+}
+
+.pagination li.active a {
+  background: #1e88e5;
+  color: #fff;
+}
+
+.pagination li.disabled a {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+/* ===== Details Pane ===== */
+.details-pane {
+  position: fixed;
+  top: 0;
+  right: -400px;
+  width: 350px;
+  height: 100%;
+  background: #fff;
+  border-left: 1px solid #ddd;
+  box-shadow: -2px 0 6px rgba(0,0,0,.1);
+  padding: 20px;
+  overflow-y: auto;
+  transition: right 0.3s ease;
+  z-index: 2500;
+}
+
+.split-shell.show-details .details-pane {
+  right: 0;
+}
+
+.details-pane .close-btn {
+  border: none;
+  background: transparent;
+  font-size: 22px;
+  float: right;
+  cursor: pointer;
+}
+
+.details-title {
+  margin: 0 0 15px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.details-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.details-actions {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.details-actions .btn {
+  background: #1e88e5;
   border-radius: 20px;
-  border: 1px solid #d1d5db;
+  padding: 8px 18px;
   font-size: 14px;
+  transition: background .2s ease;
 }
-.search-box .search-icon {
+
+.details-actions .btn:hover {
+  background: #1565c0;
+}
+
+/* ===== Modal Fixes ===== */
+.modal-content {
+  border-radius: 10px;
+}
+.modal-header {
+  background: #1e88e5;
+  color: #fff;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+.form-actions .btn {
+  border-radius: 20px;
+  padding: 8px 18px;
+}
+/* details-pane styling */
+.details-pane {
+  position: fixed;
+  top: 0;
+  right: -400px;
+  width: 400px;
+  height: 100%;
+  background: #fff;
+  border-left: 2px solid #ddd;
+  box-shadow: -3px 0 6px rgba(0,0,0,0.2);
+  transition: right 0.3s ease;
+  overflow-y: auto;
+  z-index: 2000;
+  padding: 20px;
+}
+
+.details-pane.open {
+  right: 0;
+}
+
+/* shrink main content when details open */
+#pageContent {
+  transition: margin-right 0.3s ease;
+}
+
+#pageContent.shrink {
+  margin-right: 400px; /* equal to details-pane width */
+}
+/* Details Pane */
+.details-pane {
+  position: fixed;
+  top: 0;
+  right: -400px;
+  width: 400px;
+  height: 100%;
+  background: #fff;
+  border-left: 2px solid #ddd;
+  box-shadow: -3px 0 6px rgba(0, 0, 0, 0.2);
+  transition: right 0.3s ease;
+  overflow-y: auto;
+  z-index: 2000;
+  padding: 20px;
+}
+
+.details-pane.open {
+  right: 0;
+}
+
+/* Shrink page content */
+#pageContent {
+  transition: margin-right 0.3s ease;
+}
+
+#pageContent.shrink {
+  margin-right: 400px; /* match panel width */
+}
+/* --- Claim Modal Center Fix --- */
+#claimModal .modal-dialog {
   position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 14px;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  margin: 0 !important;
+}
+
+/* --- Claim Modal Center Fix --- */
+#claimModal .modal-dialog {
+  position: absolute;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  margin: 0 !important;
+}
+
+/* --- Donation Details Side Panel --- */
+.details-pane {
+  position: fixed;
+  top: 0;
+  right: -400px;
+  width: 400px;
+  height: 100%;
+  background: #fff;
+  border-left: 3px solid #007bff;
+  box-shadow: -3px 0 12px rgba(0, 0, 0, 0.2);
+  transition: right 0.3s ease-in-out;
+  padding: 20px;
+  z-index: 1051;
+  overflow-y: auto;
+}
+
+.details-pane.open {
+  right: 0;
+}
+
+/* Scrim overlay */
+#detailsScrim {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 1050;
+  display: none;
+}
+#detailsScrim.show {
+  display: block;
+}
+
+/* Resize page content when panel opens */
+#pageContent.shrink {
+  margin-right: 400px;
+  transition: margin-right 0.3s ease-in-out;
+}
+
+/* Close button inside panel */
+.details-pane .close-btn {
+  background: none;
+  border: none;
+  font-size: 22px;
+  position: absolute;
+  right: 15px;
+  top: 10px;
+  cursor: pointer;
   color: #555;
 }
 
-/* Filters & Sort */
-.controls-bar select {
-  padding: 8px 12px;
-  border-radius: 20px;
-  border: 1px solid #d1d5db;
-  font-size: 14px;
-  cursor: pointer;
+/* Details body formatting */
+.details-body {
+  margin-top: 40px;
 }
 
-/* Pagination */
-.pagination {
-  display: flex;
-  justify-content: center;
-  margin: 20px 0;
-  gap: 6px;
+.details-body .pair {
+  margin: 12px 0;
 }
-.pagination button {
+
+.details-body .k {
+  font-weight: 600;
+  color: #666;
+  display: block;
+  font-size: 14px;
+  margin-bottom: 3px;
+}
+
+.details-body .v {
+  font-size: 15px;
+  color: #111;
+  background: #f8f9fa;
+  padding: 6px 10px;
+  border-radius: 6px;
+  display: inline-block;
+  min-width: 60%;
+}
+
+/* Modern button base */
+.modern-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 18px;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
   border: none;
-  background: #e5e7eb;
+}
+
+/* Primary (active request) */
+.primary-btn {
+  background: linear-gradient(135deg, #007bff, #0056d2);
+  color: #fff;
+  box-shadow: 0 3px 8px rgba(0, 123, 255, 0.3);
+}
+.primary-btn:hover {
+  background: linear-gradient(135deg, #0056d2, #0041a8);
+  box-shadow: 0 4px 10px rgba(0, 86, 210, 0.35);
+}
+
+/* Disabled (already requested) */
+.disabled-btn {
+  background: #e9ecef;
+  color: #6c757d;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* Map link */
+.map-link {
+  font-size: 13px;
+  margin-left: 8px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: #f1f7ff;
+  color: #0056d2;
+  text-decoration: none;
+  border: 1px solid #d0e3ff;
+  transition: background 0.2s ease;
+}
+.map-link:hover {
+  background: #dce9ff;
+}
+
+/* Actions wrapper */
+.details-actions {
+  margin-top: 25px;
+  text-align: center;
+}
+
+/* === Donation Details Panel Modern Look (Readable) === */
+.details-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 14px;
+  font-size: 1rem; /* base size bigger */
+}
+
+.row-item {
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  padding: 14px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.row-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.12);
+}
+
+.rk {
+  font-weight: 600;
+  font-size: 1rem;
+  color: #374151; /* Dark gray */
+}
+
+.rv {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #111827;
+  background: #f3f4f6;
+  padding: 6px 12px;
+  border-radius: 8px;
+  max-width: 65%;
+  text-align: right;
+  word-break: break-word;
+}
+
+/* Map link button - more prominent */
+.rv .map-link {
+  display: inline-block;
+  margin-left: 10px;
+  font-size: 0.85rem;
   padding: 6px 12px;
   border-radius: 6px;
-  cursor: pointer;
-}
-.pagination button.active {
-  background: #1e88e5;
-  color: #fff;
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: #fff !important;
+  text-decoration: none;
   font-weight: 600;
-}
-.pagination button:hover {
-  background: #1565c0;
-  color: #fff;
+  transition: background 0.2s, transform 0.2s;
 }
 
+.rv .map-link:hover {
+  background: linear-gradient(135deg, #1d4ed8, #1e40af);
+  transform: translateY(-1px);
+}
+/* Details Panel Modern Close Button */
+.details-pane {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 380px;
+  max-width: 90%;
+  height: 100%;
+  background: #ffffff;
+  box-shadow: -4px 0 12px rgba(0,0,0,0.15);
+  padding: 20px;
+  overflow-y: auto;
+  transition: transform 0.3s ease-in-out;
+  transform: translateX(100%);
+  z-index: 1000;
+}
+
+.details-pane[aria-hidden="false"] {
+  transform: translateX(0);
+}
+
+.details-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: #f3f4f6;
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #374151;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  transition: background 0.2s, transform 0.2s;
+  z-index: 10;
+}
+
+.details-close:hover {
+  background: #e5e7eb;
+  transform: rotate(90deg);
+}
+
+/* Details body styling for readability */
+.details-body .pair {
+  margin-bottom: 12px;
+  font-size: 15px;
+}
+
+.details-body .pair .k {
+  font-weight: 600;
+  color: #374151;
+  display: block;
+}
+
+.details-body .pair .v {
+  color: #1f2937;
+  margin-left: 6px;
+  display: block;
+}

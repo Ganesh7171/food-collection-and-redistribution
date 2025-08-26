@@ -1,388 +1,243 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-  <meta charset="UTF-8" />
-  <title>Donations</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+	<!DOCTYPE html>
+	<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+	  <meta charset="UTF-8" />
+	  <title>Donations</title>
+	  <meta name="viewport" content="width=device-width, initial-scale=1" />
+	
+	  <!-- Bootstrap -->
+	  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" />
+	  <link rel="stylesheet" th:href="@{/css/ShowAllDonations.css}" />
+	</head>
+	<body>
+	
+	  <!-- Header -->
+	  <header class="site-header">
+	    <button type="button" class="icon-btn" aria-label="Open menu" onclick="toggleNav()">☰</button>
+	    <h1 class="header-title">Donations</h1>
+	    <div class="header-right-spacer"></div>
+	  </header>
+	
+	  <!-- Sidebar -->
+	  <nav id="sideNav" class="side-nav">
+	    <div class="side-nav-header">
+	      <h2>Menu</h2>
+	      <button class="close-btn" type="button" onclick="toggleNav()">&times;</button>
+	    </div>
+	    <ul>
+	      <li><a href="/fwc/listAllDonations">All Donations</a></li>
+	      <li><a href="/fwc/listMyDonations">My Donations</a></li>
+	      <li><a href="/claims/MyApprovals">My Approvals</a></li>
+	      <li><a href="/fwc/donationPage">List F.C</a></li>
+	      <li><a href="/claims/MyClaimRequests">My Claims</a></li>
+	    </ul>
+	    <div class="side-nav-footer">
+	      <p>&copy; 2025 Food Waste Collection</p>
+	    </div>
+	  </nav>
+	
+	  <!-- Overlay -->
+	  <div id="scrim" class="scrim" onclick="toggleNav()"></div>
+	
+	  <!-- Page Content -->
+	  <div id="pageContent">
+	
+	    <!-- Search + Filter + Sort -->
+	    <form method="get" th:action="@{/fwc/listAllDonations}" class="controls-bar form-inline" style="margin:15px;">
+	      <!-- Search -->
+	      <div class="form-group">
+	        <input type="text" name="search" th:value="${search}" class="form-control" placeholder="Search by Donation ID..." />
+	      </div>
+	
+	      <!-- Status Filter -->
+	      <div class="form-group">
+	        <select name="status" class="form-control" th:value="${status}">
+	          <option value="">All Status</option>
+	          <option value="AVAILABLE">Available</option>
+	          <option value="CLAIMED">Claimed</option>
+	          <option value="EXPIRED">Expired</option>
+	        </select>
+	      </div>
+	
+	      <!-- Meal Filter -->
+	      <div class="form-group">
+	        <select name="meal" class="form-control" th:value="${meal}">
+	          <option value="">All Meals</option>
+	          <option value="Breakfast">Breakfast</option>
+	          <option value="Lunch">Lunch</option>
+	          <option value="Dinner">Dinner</option>
+	        </select>
+	      </div>
+	
+	      <!-- Sort -->
+	      <div class="form-group">
+	        <select name="sortBy" class="form-control" th:value="${sortBy}">
+	          <option value="donationId">ID</option>
+	          <option value="claimTime">Claim Time</option>
+	        </select>
+	        <select name="order" class="form-control" th:value="${order}">
+	          <option value="desc">Descending</option>
+	          <option value="asc">Ascending</option>
+	        </select>
+	      </div>
+	
+	      <button type="submit" class="btn btn-primary">Apply</button>
+	    </form>
+	
+	    <!-- Cards -->
+	    <div class="cards" id="cards">
+	     <div class="donation-card"
+	     th:each="donation : ${donations}"
+	     th:attr="
+	        data-donation-id=${donation.donationId},
+	        data-meal-type=${donation.mealType},
+	        data-status=${donation.status},
+	        data-claim-time=${donation.claimTime},
+	        data-address=${donation.address},
+	        data-google-plus-code=${donation.googlePlusCode},
+	        data-username=${donation.user != null ? donation.user.username : 'N/A'},
+	        data-mobile=${donation.user != null ? donation.user.phoneNumber : 'N/A'}
+	     "
+	     onclick="showDetailsFromCard(this)">
+	
+	        <div class="card-header">
+	          <span class="meal-type" th:text="${donation.mealType}">Meal</span>
+	          <span class="status-badge" th:text="${donation.status}">Status</span>
+	        </div>
+	        <div class="card-body">
+	          <div class="pair">
+	            <span class="k">ID</span>
+	            <span class="v" th:text="${donation.donationId}">1</span>
+	          </div>
+	          <div class="pair">
+	            <span class="k">Claim Time</span>
+	            <span class="v" th:text="${donation.claimTime}">2025-06-22T10:30</span>
+	          </div>
+	        </div>
+	        <div class="card-actions">
+	          <button class="btn btn-primary btn-xs"
+	                  th:disabled="${donation.status == 'CLAIMED'}"
+	                  th:text="${donation.status == 'CLAIMED'} ? 'Request Already Placed' : 'Place Request'"
+	                  th:onclick="'event.stopPropagation();openClaimPopup(' + '\'' + ${donation.donationId} + '\'' + ')'">
+	          </button>
+	        </div>
+	      </div>
+	    </div>
+	
+	    <!-- Pagination -->
+	    <nav aria-label="Page navigation" style="margin-top:20px; text-align:center;">
+	      <ul class="pagination">
+	        <li th:classappend="${currentPage == 0} ? 'disabled'">
+	          <a th:href="@{/fwc/listAllDonations(page=${currentPage-1}, size=6, search=${search}, status=${status}, meal=${meal}, sortBy=${sortBy}, order=${order})}">&laquo;</a>
+	        </li>
+	
+	        <li th:each="i : ${#numbers.sequence(0, totalPages-1)}"
+	            th:classappend="${i == currentPage} ? 'active'">
+	          <a th:text="${i+1}"
+	             th:href="@{/fwc/listAllDonations(page=${i}, size=6, search=${search}, status=${status}, meal=${meal}, sortBy=${sortBy}, order=${order})}"></a>
+	        </li>
+	
+	        <li th:classappend="${currentPage == totalPages-1} ? 'disabled'">
+	          <a th:href="@{/fwc/listAllDonations(page=${currentPage+1}, size=6, search=${search}, status=${status}, meal=${meal}, sortBy=${sortBy}, order=${order})}">&raquo;</a>
+	        </li>
+	      </ul>
+	    </nav>
+	
+	 <!-- Details Panel -->
+<aside class="details-pane" id="detailsPane" aria-hidden="true">
+  <button class="details-close" type="button" onclick="closeDetails()">✕</button>
+  <div id="detailsBody" class="details-body"></div>
+</aside>
 
-  <!-- Bootstrap 3.4 (for modal + basic buttons) -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" />
-  <!-- Page-specific CSS for cards, split-pane etc. -->
-  <link rel="stylesheet" th:href="@{/css/ShowAllDonations.css}" />
+	
+	    <!-- Claim Modal -->
+	    <div id="claimModal" class="modal fade" role="dialog">
+	      <div class="modal-dialog modal-lg">
+	        <div class="modal-content">
+	          <div class="modal-header">
+	            <h4 class="modal-title">Claim Food Donation</h4>
+	            <button type="button" class="close" data-dismiss="modal">&times;</button>
+	          </div>
+	          <div class="modal-body">
+	            <form id="claimForm">
+	              <input type="hidden" id="donationIdField" name="donation.donationId" />
+	              <input type="hidden" name="user.userId" th:value="${session.Users.userId}" />
+	
+	              <div class="form-inline">
+	                <label class="mr-10">Request For:</label>
+	                <label><input type="radio" name="requestForOption" value="saved" onclick="toggleAddress(true)" /> Self</label>
+	                <label><input type="radio" name="requestForOption" value="custom" onclick="toggleAddress(false)" /> For others</label>
+	              </div>
+	
+	              <div class="form-group">
+	                <label for="claimerName">Your Name</label>
+	                <input type="text" class="form-control" id="claimerName" name="claimerName" required />
+	              </div>
+	
+	              <div class="form-group">
+	                <label for="contactNumber">Contact Number</label>
+	                <input type="text" class="form-control" id="contactNumber" name="contactNumber" required />
+	              </div>
+	
+	              <div class="form-group">
+	                <label for="addressInput">Claim Address</label>
+	                <input type="text" class="form-control" id="addressInput" name="claimedAddress" required />
+	              </div>
+	
+	              <div class="form-group">
+	                <label for="googlePlusCode">Google Plus Code</label>
+	                <input type="text" class="form-control" id="googlePlusCode" name="googlePlusCode" required />
+	              </div>
+	
+	              <div class="form-actions" style="text-align:center;">
+	                <button type="submit" class="btn btn-primary">Submit Claim</button>
+	              </div>
+	            </form>
+	          </div>
+	        </div>
+	      </div>
+	    </div>
+	
+	  </div> <!-- /#pageContent -->
+	<div id="detailsScrim" onclick="closeDetails()"></div>
+
+
+
+	
+	  <!-- JS -->
+	  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+	  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 	  <script th:src="@{/js/ShowAllDonations.js}"></script>
-  <!-- Inline CSS ONLY for header + sidebar + shifting content -->
-  <style>
-    /* Reset */
-    html, body { margin:0; padding:0; }
+	  <script th:inline="javascript">
+  function toggleAddress(useSaved) {
+    const userNameInput = document.getElementById("claimerName");
+    const contactNumberInput = document.getElementById("contactNumber");
+    const addressInput = document.getElementById("addressInput");
+    const googlePlusCodeInput = document.getElementById("googlePlusCode");
 
-    /* Header */
-    .site-header {
-      position: sticky; top: 0;
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 12px 16px;
-      background: #1e88e5; color: #fff;
-      box-shadow: 0 2px 6px rgba(0,0,0,.1);
-      z-index: 1500;
+    if (useSaved) {
+      userNameInput.value       = /*[[${session.Users.username}]]*/ "";
+      contactNumberInput.value  = /*[[${session.Users.phoneNumber}]]*/ "";
+      addressInput.value        = /*[[${session.Users.address}]]*/ "";
+      googlePlusCodeInput.value = /*[[${session.Users.googlePlusCode}]]*/ "";
+
+      userNameInput.readOnly =
+      contactNumberInput.readOnly =
+      addressInput.readOnly =
+      googlePlusCodeInput.readOnly = true;
+    } else {
+      userNameInput.value =
+      contactNumberInput.value =
+      addressInput.value =
+      googlePlusCodeInput.value = "";
+
+      userNameInput.readOnly =
+      contactNumberInput.readOnly =
+      addressInput.readOnly =
+      googlePlusCodeInput.readOnly = false;
     }
-    .icon-btn {
-      background: transparent; border: none; cursor: pointer; color: #fff;
-      font-size: 24px; width: 44px; height: 36px; display: grid; place-items: center;
-    }
-    .header-title {
-      margin: 0; font-size: 18px; font-weight: 600; text-align: center; flex: 1;
-    }
-    .header-right-spacer { width: 44px; } /* keeps title centered */
-
-    /* Sidebar Drawer */
-    .side-nav {
-      position: fixed; top: 0; left: 0; height: 100vh;
-      width: 0; overflow-x: hidden;
-      background: #1e88e5; color: #fff;
-      transition: width .3s ease;
-      z-index: 2000; display: flex; flex-direction: column;
-    }
-    .side-nav.open { width: 250px; }
-
-    .side-nav-header {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 12px 16px; background: #1565c0; border-bottom: 1px solid rgba(255,255,255,.2);
-    }
-    .side-nav-header h2 { margin: 0; font-size: 18px; }
-    .close-btn {
-      background: none; border: none; color: #fff; font-size: 24px; cursor: pointer;
-    }
-
-    .side-nav ul { list-style: none; margin: 0; padding: 8px 0; flex: 1; overflow-y: auto; }
-    .side-nav li { padding: 0; }
-    .side-nav a {
-      display: block; padding: 12px 20px; color: #fff; text-decoration: none; font-size: 16px;
-      transition: background .2s ease;
-    }
-    .side-nav a:hover { background: rgba(255,255,255,.2); border-radius: 6px; }
-
-    .side-nav-footer {
-      border-top: 1px solid rgba(255,255,255,.2);
-      text-align: center; font-size: 13px; padding: 10px; color: #fff;
-    }
-
-    /* Content shifting when sidebar opens */
-    #pageContent { transition: margin-left .3s ease; }
-    #pageContent.shifted { margin-left: 250px; }
-
-    /* Optional overlay to dim content when nav is open (mobile) */
-    .scrim {
-      position: fixed; inset: 0; background: rgba(0,0,0,.25);
-      opacity: 0; visibility: hidden; transition: opacity .2s ease, visibility .2s ease; z-index: 1800;
-    }
-    .scrim.show { opacity: 1; visibility: visible; }
-    @media (min-width: 992px) { /* large screens: keep content interactive */
-      .scrim { display: none; }
-    }
-  </style>
-</head>
-<body>
-
-  <!-- Header with ☰ -->
-  <header class="site-header">
-    <button type="button" class="icon-btn" aria-label="Open menu" onclick="toggleNav()">☰</button>
-    <h1 class="header-title">Donations</h1>
-    <div class="header-right-spacer"></div>
-  </header>
-
-  <!-- Sidebar (inline include) -->
-  <nav id="sideNav" class="side-nav">
-    <div class="side-nav-header">
-      <h2>Menu</h2>
-      <button class="close-btn" type="button" aria-label="Close menu" onclick="toggleNav()">&times;</button>
-    </div>
-    <ul>
-      <li><a href="/fwc/listAllDonations">All Donations</a></li>
-      <li><a href="/fwc/listMyDonations">My Donations</a></li>
-      <li><a href="/claims/MyApprovals">My Approvals</a></li>
-      <li><a href="/fwc/donationPage">List F.C</a></li>
-      <li><a href="/claims/MyClaimRequests">My Claims</a></li>
-    </ul>
-    <div class="side-nav-footer">
-      <p>&copy; 2025 Food Waste Collection</p>
-    </div>
-  </nav>
-
-  <!-- Optional scrim (click to close on mobile) -->
-  <div id="scrim" class="scrim" onclick="toggleNav()"></div>
-
-  <!-- Page Content (must have this id for shifting) -->
-  <div id="pageContent">
-
-    <!-- Cards + Details Split Shell -->
-    <div class="split-shell" id="splitShell">
-      <!-- LEFT: cards -->
-      <section class="list-pane" id="listPane">
-        <div class="page-header">
-          <h2 class="page-title">Donations</h2>
-        </div>
-<!-- Controls: Search + Filter + Sort -->
-<div class="controls-bar">
-  <!-- Search by ID -->
-  <div class="search-box">
-    <input type="text" id="searchInput" placeholder="Search by Donation ID..." />
-    <span class="search-icon">🔍</span>
-  </div>
-
-  <!-- Filter by Status -->
-  <select id="statusFilter">
-    <option value="">All Status</option>
-    <option value="AVAILABLE">Available</option>
-    <option value="CLAIMED">Claimed</option>
-    <option value="EXPIRED">Expired</option>
-  </select>
-
-  <!-- Filter by Meal Type -->
-  <select id="mealFilter">
-    <option value="">All Meals</option>
-    <option value="Breakfast">Breakfast</option>
-    <option value="Lunch">Lunch</option>
-    <option value="Dinner">Dinner</option>
-  </select>
-
-  <!-- Sort -->
-  <select id="sortBy">
-    <option value="newest">Newest First</option>
-    <option value="oldest">Oldest First</option>
-  </select>
-</div>
-
-<!-- Pagination -->
-<div class="pagination" id="pagination"></div>
-
-        <div class="cards" id="cards">
-          <!-- Donation Card -->
-          <div
-            class="donation-card"
-            th:each="donation, stat : ${donations}"
-            th:attr="
-              data-donation-id=${donation.donationId},
-              data-meal-type=${donation.mealType},
-              data-status=${donation.status},
-              data-claim-time=${donation.claimTime},
-              data-address=${donation.address},
-              data-google-plus-code=${donation.googlePlusCode},
-              data-username=${donation.user != null ? donation.user.username : 'N/A'},
-              data-mobile=${donation.user != null ? donation.user.phoneNumber : 'N/A'}
-            "
-            onclick="showDetailsFromCard(this)"
-          >
-            <div class="card-header">
-              <span class="meal-type" th:text="${donation.mealType}">Meal</span>
-              <span class="status-badge" th:text="${donation.status}">Status</span>
-            </div>
-
-            <div class="card-body">
-              <div class="pair">
-                <span class="k">ID</span>
-                <span class="v" th:text="${donation.donationId}">1</span>
-              </div>
-              <div class="pair">
-                <span class="k">Claim Time</span>
-                <span class="v" th:text="${donation.claimTime}">2025-06-22T10:30</span>
-              </div>
-            </div>
-
-            <div class="card-actions">
-              <button
-                class="btn btn-primary btn-xs"
-                th:onclick="'event.stopPropagation();openClaimPopup(' + '\'' + ${donation.donationId} + '\'' + ')'"
-                type="button"
-              >
-                Place Request
-              </button>
-            </div>
-          </div>
-          <!-- /Donation Card -->
-        </div>
-      </section>
-
-      <!-- RIGHT: details panel -->
-      <aside class="details-pane" id="detailsPane" aria-hidden="true">
-        <button class="close-btn" type="button" aria-label="Close details" onclick="closeDetails()">&times;</button>
-        <div id="detailsBody" class="details-body"><!-- filled dynamically --></div>
-      </aside>
-    </div>
-
-    <!-- Claim Modal -->
-    <div id="claimModal" class="modal fade" tabindex="1" role="dialog">
-      <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h4 class="modal-title">Claim Food Donation</h4>
-            <button type="button" class="close" data-dismiss="modal">&times;</button>
-          </div>
-
-          <div class="classmodal-body">
-            <form id="claimForm">
-              <input type="hidden" id="donationIdField" name="donation.donationId" />
-              <input type="hidden" name="user.userId" th:value="${session.Users.userId}" />
-
-              <div class="form-inline form-inline-gap">
-                <label class="mr-10">Request For:</label>
-                <label class="mr-10">
-                  <input type="radio" name="requestForOption" id="useSaved" value="saved" onclick="toggleAddress(true)" />
-                  Self
-                </label>
-                <label>
-                  <input type="radio" name="requestForOption" id="enterNew" value="custom" onclick="toggleAddress(false)" />
-                  For others
-                </label>
-              </div>
-
-              <div class="form-group">
-                <label for="claimerName">Your Name</label>
-                <input type="text" class="form-control" id="claimerName" name="claimerName" required />
-              </div>
-
-              <div class="form-group">
-                <label for="contactNumber">Contact Number</label>
-                <input type="text" class="form-control" id="contactNumber" name="contactNumber" required />
-              </div>
-
-              <div class="form-group">
-                <label for="addressInput">Claim Address</label>
-                <input type="text" class="form-control" id="addressInput" name="claimedAddress" required />
-              </div>
-
-              <div class="form-group">
-                <label for="googlePlusCode">Google Plus Code</label>
-                <input type="text" class="form-control" id="googlePlusCode" name="googlePlusCode" required />
-              </div>
-
-              <div class="form-actions">
-  <button type="submit" class="btn btn-primary">Submit Claim</button>
-</div>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-
-  </div><!-- /#pageContent -->
-
-  <!-- jQuery + Bootstrap JS -->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-
-  <!-- Page JS -->
-  <script th:inline="javascript">
-    /* Sidebar toggle */
-    function toggleNav() {
-      var nav = document.getElementById('sideNav');
-      var content = document.getElementById('pageContent');
-      var scrim = document.getElementById('scrim');
-
-      var isOpen = nav.classList.toggle('open');
-      if (content) content.classList.toggle('shifted', isOpen);
-      if (scrim) scrim.classList.toggle('show', isOpen);
-    }
-
-    // Close on Escape
-    document.addEventListener('keydown', function(e){
-      if (e.key === 'Escape') {
-        var nav = document.getElementById('sideNav');
-        if (nav.classList.contains('open')) toggleNav();
-      }
-    });
-
-    // open claim modal
-    function openClaimPopup(donationId) {
-      document.getElementById('donationIdField').value = donationId;
-      $('#claimModal').modal('show');
-    }
-
-    // show details in split pane
-   function showDetailsFromCard(cardEl) {
-  var d = cardEl.dataset;
-
-  var username = d.username && d.username !== 'null' ? d.username : 'N/A';
-  var mobile = d.mobile && d.mobile !== 'null' ? d.mobile : 'N/A';
-  var address = d.address && d.address !== 'null' ? d.address : 'N/A';
-  var gpc = d.googlePlusCode && d.googlePlusCode !== 'null' ? d.googlePlusCode : 'N/A';
-
-  var html = `
-    <h3 class="details-title">${d.mealType || 'Donation'}</h3>
-    <div class="details-grid">
-      <div class="row-item"><div class="rk">ID</div><div class="rv">${d.donationId}</div></div>
-      <div class="row-item"><div class="rk">Status</div><div class="rv">${d.status}</div></div>
-      <div class="row-item"><div class="rk">Claim Time</div><div class="rv">${d.claimTime || '-'}</div></div>
-      <div class="row-item"><div class="rk">Address</div><div class="rv">${address}</div></div>
-      <div class="row-item">
-        <div class="rk">Google Plus Code</div>
-        <div class="rv">
-          ${gpc}
-          ${gpc && gpc !== 'N/A' ? `
-            <a class="btn btn-xs btn-primary ml-8" target="_blank"
-               href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(gpc)}">
-              View on Map
-            </a>` : ''}
-        </div>
-      </div>
-      <div class="row-item"><div class="rk">User</div><div class="rv">${username}</div></div>
-      <div class="row-item"><div class="rk">Mobile</div><div class="rv">${mobile}</div></div>
-    </div>
-
-    <!-- Place Request button at bottom -->
-    <div class="details-actions" style="margin-top: 20px; text-align: center;">
-      <button
-        class="btn btn-primary"
-        type="button"
-        onclick="event.stopPropagation();openClaimPopup('${d.donationId}')"
-      >
-        Place Request
-      </button>
-    </div>
-  `;
-
-  document.getElementById('detailsBody').innerHTML = html;
-  document.getElementById('splitShell').classList.add('show-details');
-  document.getElementById('detailsPane').setAttribute('aria-hidden', 'false');
-}
-
-    function closeDetails() {
-      document.getElementById('splitShell').classList.remove('show-details');
-      document.getElementById('detailsPane').setAttribute('aria-hidden', 'true');
-      document.getElementById('detailsBody').innerHTML = '';
-    }
-
-    // claim form submit
-    $(function () {
-      $('#claimForm').submit(function (e) {
-        e.preventDefault();
-        var formData = $(this).serialize();
-        $.post('/claims/submitClaim', formData, function (response) {
-          $('#claimModal').modal('hide');
-          alert(response);
-        }).fail(function (xhr) {
-          $('#claimModal').modal('hide');
-          alert('An error occurred: ' + xhr.responseText);
-        });
-      });
-    });
-
-    // toggle address auto-fill
-    function toggleAddress(useSaved) {
-      var userNameInput = document.getElementById('claimerName');
-      var contactNumberInput = document.getElementById('contactNumber');
-      var addressInput = document.getElementById('addressInput');
-      var googlePlusCodeInput = document.getElementById('googlePlusCode');
-
-      if (useSaved) {
-        userNameInput.value = /*[[${session.Users.username}]]*/ '';
-        contactNumberInput.value = /*[[${session.Users.phoneNumber}]]*/ '';
-        addressInput.value = /*[[${session.Users.address}]]*/ '';
-        googlePlusCodeInput.value = /*[[${session.Users.googlePlusCode}]]*/ '';
-        userNameInput.readOnly = contactNumberInput.readOnly = addressInput.readOnly = googlePlusCodeInput.readOnly = true;
-      } else {
-        userNameInput.value = contactNumberInput.value = addressInput.value = googlePlusCodeInput.value = '';
-        userNameInput.readOnly = contactNumberInput.readOnly = addressInput.readOnly = googlePlusCodeInput.readOnly = false;
-      }
-    }
-  </script>
-</body>
-</html>
+  }
+</script>
+	  
+	</body>
+	</html>
