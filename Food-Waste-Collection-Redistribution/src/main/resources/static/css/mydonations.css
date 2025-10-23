@@ -1,0 +1,110 @@
+body {
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: #f5f7fa;
+  padding-top: 80px; /* offset for header */
+}
+
+/* Search Bar */
+.search-bar {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 10;
+}
+.search-bar input {
+  padding: 10px 14px;
+  border-radius: 12px 0 0 12px;
+  border: 1px solid #ccc;
+  width: 250px;
+}
+.search-bar input:focus {
+  border-color: #00b4d8;
+  box-shadow: 0 2px 6px rgba(0,180,216,0.2);
+}
+.search-bar button {
+  padding: 10px 16px;
+  border: none;
+  background: #00b4d8;
+  color: #fff;
+  border-radius: 0 12px 12px 0;
+  cursor: pointer;
+}
+
+/* Card Grid */
+.card-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill,minmax(300px,1fr));
+  gap: 20px;
+  padding: 0 20px;
+}
+
+/* Donation Card */
+.donation-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.08);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.donation-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.12);
+}
+
+/* Card Header */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+.card-header .meal-type { font-size: 1.1rem; }
+.card-header .status {
+  padding: 4px 10px;
+  border-radius: 12px;
+  color: #fff;
+}
+.status.AVAILABLE { background: #28a745; }
+.status.CLAIMED { background: #ffc107; color:#000; }
+.status.EXPIRED { background: #dc3545; }
+
+/* Card Body */
+.card-body .pair {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+.k { font-weight:600; color:#374151; }
+.v { color:#111827; }
+
+/* Collapsible Claimer */
+.toggle-claimer-btn {
+  margin-top:10px;
+  padding:6px 10px;
+  background:#00b4d8;
+  color:#fff;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+  width:100%;
+  text-align:left;
+}
+.claimer-details {
+  max-height:0;
+  overflow:hidden;
+  margin-top:10px;
+  border-top:1px solid #e5e7eb;
+  padding-top:0;
+  transition: all 0.3s ease-in-out;
+}
+.claimer-details.show {
+  max-height:500px;
+  padding-top:10px;
+}
+
+/* Responsive */
+@media(max-width: 768px){
+  .card-container { grid-template-columns: 1fr; }
+  .search-bar input { width: 60%; }
+}

@@ -134,3 +134,62 @@ function openClaimPopup(donationId) {
   document.getElementById("donationIdField").value = donationId;
   $("#claimModal").modal("show");
 }
+
+function showDetailsFromCard(cardEl) {
+    const d = cardEl.dataset;
+
+    const username = d.username && d.username !== "null" ? d.username : "N/A";
+    const mobile = d.mobile && d.mobile !== "null" ? d.mobile : "N/A";
+    const address = d.address && d.address !== "null" ? d.address : "N/A";
+    const gpc = d.googlePlusCode && d.googlePlusCode !== "null" ? d.googlePlusCode : "N/A";
+    const mealType = d.mealType || "N/A";
+    const status = d.status || "N/A";
+    const claimTime = d.claimTime || "-";
+
+    // Build modern card-style HTML
+    const html = `
+        <div class="detail-card">
+            <div class="detail-row"><div class="rk">Meal</div><div class="rv">${mealType}</div></div>
+            <div class="detail-row"><div class="rk">Status</div><div class="rv">${status}</div></div>
+            <div class="detail-row"><div class="rk">Claim Time</div><div class="rv">${claimTime}</div></div>
+            <div class="detail-row"><div class="rk">Address</div><div class="rv">${address}</div></div>
+            <div class="detail-row">
+                <div class="rk">Google Plus Code</div>
+                <div class="rv">
+                    ${gpc}
+                    ${gpc && gpc !== "N/A" ? `<a class="map-link" target="_blank" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(gpc)}">View on Map</a>` : ""}
+                </div>
+            </div>
+            <div class="detail-row"><div class="rk">User</div><div class="rv">${username}</div></div>
+            <div class="detail-row"><div class="rk">Mobile</div><div class="rv">${mobile}</div></div>
+        </div>
+    `;
+
+    // Add action button at the bottom
+    const actionButton = d.status === "CLAIMED"
+        ? `<button class="details-actions-button" disabled>Request Already Placed</button>`
+        : `<button class="details-actions-button" onclick="event.stopPropagation();openClaimPopup('${d.donationId}')">Place Request</button>`;
+
+    const fullHtml = html + `<div class="details-actions">${actionButton}</div>`;
+
+    // Inject into details panel
+    const detailsBody = document.getElementById("detailsBody");
+    detailsBody.innerHTML = fullHtml;
+
+    // Show panel
+    const pane = document.getElementById("detailsPane");
+    const content = document.getElementById("pageContent");
+    pane.setAttribute("aria-hidden", "false");
+    pane.classList.add("open");
+    content.classList.add("shrink");
+}
+
+// Close details panel
+function closeDetails() {
+    const pane = document.getElementById("detailsPane");
+    const content = document.getElementById("pageContent");
+    pane.setAttribute("aria-hidden", "true");
+    pane.classList.remove("open");
+    content.classList.remove("shrink");
+    document.getElementById("detailsBody").innerHTML = "";
+}

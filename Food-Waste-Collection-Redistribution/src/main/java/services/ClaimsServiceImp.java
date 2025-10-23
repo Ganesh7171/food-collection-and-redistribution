@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import entities.Claims;
 import entities.Donation;
+import jakarta.transaction.Transactional;
 import repositories.ClaimsRepository;
 import repositories.DonationRepository;
 
@@ -22,18 +23,51 @@ public class ClaimsServiceImp implements ClaimsService {
 
 	@Autowired
 	DonationRepository donationRepository;
+	
+	
+	public void updateClaimStatus(int claimId, String status, String comment) {
+	    Claims claim = claimsRepository.findById(claimId).orElseThrow(() -> new RuntimeException("Claim not found"));
+	    claim.setClaimStatus(status);
+	    claim.setComment(comment); // add comment field in your entity
+	    //claim.setUpdatedAt(LocalDateTime.now());
+	    claimsRepository.save(claim);
+	    int donationId = claim.getDonation().getDonationId();
 
-	public void approveClaim(int claimId) {
-				
-		claimsRepository.updateClaimStatus("Approved", claimId);
-		
+        // 1. Reject all other claims for this donation
+        List<Claims> allClaims = claimsRepository.findByDonationDonationId(donationId);
+        for (Claims c : allClaims) {
+            if (c.getClaimId() == claimId) {
+                c.setClaimStatus("Approved");
+            } else {
+                c.setClaimStatus("Rejected");
+            }
+            claimsRepository.save(c);
+        }
+
+	    
 	}
+
+
+	/*
+	 * @Transactional public Claims updateClaimStatus(int claimId) { Claims claim =
+	 * claimsRepository.findById(claimId).orElseThrow(); int donationId =
+	 * claim.getDonation().getDonationId();
+	 * 
+	 * // 1. Reject all other claims for this donation List<Claims> allClaims =
+	 * claimsRepository.findByDonationDonationId(donationId); for (Claims c :
+	 * allClaims) { if (c.getClaimId() == claimId) { c.setClaimStatus("Approved"); }
+	 * else { c.setClaimStatus("Rejected"); } claimsRepository.save(c); }
+	 * 
+	 * return claim; }
+	 */
+
 
 	@Override
-	public void rejectClaim(int claimId) {
-		claimsRepository.updateClaimStatus("Rejected", claimId);
-
-	}
+	public Claims rejectClaim(int claimId) {
+        Claims claim = claimsRepository.findById(claimId).orElseThrow();
+        claim.setClaimStatus("Rejected");
+        return claimsRepository.save(claim);
+    }
 
 	@Override
 	public void editClaim() {
@@ -88,7 +122,14 @@ public class ClaimsServiceImp implements ClaimsService {
 	}
 	
 	public List<Claims> getRequestsByOthersOnMyDonations(int myUserId) {
-	    return claimsRepository.findRequestsByOthersOnMyDonations(myUserId);
+	    return claimsRepository.findClaimsByDonorId(myUserId);
+	}
+
+
+	@Override
+	public Claims approveClaim(int claimId) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	

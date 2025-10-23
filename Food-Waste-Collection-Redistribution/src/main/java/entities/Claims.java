@@ -3,8 +3,7 @@ package entities;
 import java.time.LocalDateTime;
 import java.util.Date;
 
-
-
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -38,9 +37,24 @@ public class Claims {
     private LocalDateTime claimTime;
     private String claimStatus;
     private String requestFor;
+    @Column(length = 1000)
+    private String comment;
+    private LocalDateTime actionTime;
+    	
     
     
-    
+	public LocalDateTime getActionTime() {
+		return actionTime;
+	}
+	public void setActionTime(LocalDateTime actionTime) {
+		this.actionTime = actionTime;
+	}
+	public String getComment() {
+		return comment;
+	}
+	public void setComment(String comment) {
+		this.comment = comment;
+	}
 	public Donation getDonation() {
 		return donation;
 	}

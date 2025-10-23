@@ -1,4 +1,4 @@
-	<!DOCTYPE html>
+<!-- Extra Fi	<!DOCTYPE html>
 	<html xmlns:th="http://www.thymeleaf.org">
 	<head>
 	  <meta charset="UTF-8" />
@@ -11,33 +11,7 @@
 	</head>
 	<body>
 	
-	  <!-- Header -->
-	  <header class="site-header">
-	    <button type="button" class="icon-btn" aria-label="Open menu" onclick="toggleNav()">☰</button>
-	    <h1 class="header-title">Donations</h1>
-	    <div class="header-right-spacer"></div>
-	  </header>
-	
-	  <!-- Sidebar -->
-	  <nav id="sideNav" class="side-nav">
-	    <div class="side-nav-header">
-	      <h2>Menu</h2>
-	      <button class="close-btn" type="button" onclick="toggleNav()">&times;</button>
-	    </div>
-	    <ul>
-	      <li><a href="/fwc/listAllDonations">All Donations</a></li>
-	      <li><a href="/fwc/listMyDonations">My Donations</a></li>
-	      <li><a href="/claims/MyApprovals">My Approvals</a></li>
-	      <li><a href="/fwc/donationPage">List F.C</a></li>
-	      <li><a href="/claims/MyClaimRequests">My Claims</a></li>
-	    </ul>
-	    <div class="side-nav-footer">
-	      <p>&copy; 2025 Food Waste Collection</p>
-	    </div>
-	  </nav>
-	
-	  <!-- Overlay -->
-	  <div id="scrim" class="scrim" onclick="toggleNav()"></div>
+	   <div th:replace="~{fragments/header :: app-header}"></div>
 	
 	  <!-- Page Content -->
 	  <div id="pageContent">
@@ -124,24 +98,25 @@
 	      </div>
 	    </div>
 	
-	    <!-- Pagination -->
-	    <nav aria-label="Page navigation" style="margin-top:20px; text-align:center;">
-	      <ul class="pagination">
-	        <li th:classappend="${currentPage == 0} ? 'disabled'">
-	          <a th:href="@{/fwc/listAllDonations(page=${currentPage-1}, size=6, search=${search}, status=${status}, meal=${meal}, sortBy=${sortBy}, order=${order})}">&laquo;</a>
-	        </li>
-	
-	        <li th:each="i : ${#numbers.sequence(0, totalPages-1)}"
-	            th:classappend="${i == currentPage} ? 'active'">
-	          <a th:text="${i+1}"
-	             th:href="@{/fwc/listAllDonations(page=${i}, size=6, search=${search}, status=${status}, meal=${meal}, sortBy=${sortBy}, order=${order})}"></a>
-	        </li>
-	
-	        <li th:classappend="${currentPage == totalPages-1} ? 'disabled'">
-	          <a th:href="@{/fwc/listAllDonations(page=${currentPage+1}, size=6, search=${search}, status=${status}, meal=${meal}, sortBy=${sortBy}, order=${order})}">&raquo;</a>
-	        </li>
-	      </ul>
-	    </nav>
+	   <!-- Pagination -->
+<nav aria-label="Page navigation" style="margin-top:20px; text-align:center;">
+  <ul class="pagination">
+    <li th:classappend="${currentPage == 0} ? 'disabled'">
+      <a th:href="@{/fwc/listAllDonations(page=${currentPage-1}, size=8, search=${search}, status=${status}, meal=${meal}, sortBy=${sortBy}, order=${order})}">&laquo;</a>
+    </li>
+
+    <li th:each="i : ${#numbers.sequence(0, totalPages-1)}"
+        th:classappend="${i == currentPage} ? 'active'">
+      <a th:text="${i+1}"
+         th:href="@{/fwc/listAllDonations(page=${i}, size=8, search=${search}, status=${status}, meal=${meal}, sortBy=${sortBy}, order=${order})}"></a>
+    </li>
+
+    <li th:classappend="${currentPage == totalPages-1} ? 'disabled'">
+      <a th:href="@{/fwc/listAllDonations(page=${currentPage+1}, size=8, search=${search}, status=${status}, meal=${meal}, sortBy=${sortBy}, order=${order})}">&raquo;</a>
+    </li>
+  </ul>
+</nav>
+
 	
 	 <!-- Details Panel -->
 <aside class="details-pane" id="detailsPane" aria-hidden="true">
@@ -241,3 +216,5 @@
 	  
 	</body>
 	</html>
+
+

@@ -2,19 +2,19 @@ package repositories;
 
 import java.util.List;
 
-import org.springframework.data.domain.Pageable;  // ✅ Correct import
 import org.springframework.data.domain.Page;
-
+import org.springframework.data.domain.Pageable;  // ✅ Correct import
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import entities.Donation;
+import entities.Users;
 
 @Repository
 public interface DonationRepository extends JpaRepository<Donation,Integer> {
 
 	
-	List<Donation> findByUserUserId(int userId);
+	List<Donation> findByDonorUserId(int userId);
 
 	Page<Donation> findByDonationIdContaining(int id, Pageable pageable);
 
@@ -24,6 +24,15 @@ public interface DonationRepository extends JpaRepository<Donation,Integer> {
 
 	Page<Donation> findByStatus(String status, Pageable pageable);
 	
+	long countByDonor(Users donor);
+
 	
 
+
+	
+	Iterable<Donation> findTop5ByDonorOrderByClaimTimeDesc(Users donor);
+
+   
+
+	
 }

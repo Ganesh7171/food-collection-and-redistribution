@@ -1,77 +1,134 @@
-/* Reset some default styles */
-body, h2, label, input, select, button {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+/* ===== Page Layout ===== */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* prevent scrolling */
+  background: #f5f7fa; /* subtle background */
 }
 
-body {
-    background: #f4f7f8;
-    color: #333;
-    padding: 40px;
-    display: flex;
-    justify-content: center;
+.page-container {
+  max-width: 800px;
+  height: calc(100vh - 90px); /* full height minus header */
+  margin: 10px auto 0;
+  padding: 0 20px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  box-sizing: border-box;
 }
 
-form {
-    background: #fff;
-    padding: 30px 40px;
-    border-radius: 10px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 500px;
+/* ===== Form Card ===== */
+.page-container form {
+  background: #fff;
+  padding: 32px;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+  max-width: 600px;
+  width: 100%;
+  animation: fadeIn 0.6s ease-in-out;
+  height: auto;
 }
 
-h2 {
-    text-align: center;
-    margin-bottom: 25px;
-    color: #2c3e50;
+/* ===== Heading ===== */
+.page-container h2 {
+  margin-bottom: 24px;
+  font-size: 28px;
+  font-weight: 700;
+  color: #0077b6; /* main blue */
+  text-align: center;  
+  position: relative;
 }
 
-label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 600;
-    color: #34495e;
+.page-container h2::after {
+  content: "";
+  display: block;
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, #0077b6, #00b4d8); /* gradient underline */
+  margin: 8px auto 0;
+  border-radius: 2px;
 }
 
-input[type="text"],
-input[type="datetime-local"],
-select {
-    width: 100%;
-    padding: 10px 12px;
-    margin-bottom: 20px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    transition: border-color 0.3s;
+/* ===== Labels ===== */
+.page-container label {
+  font-weight: 600;
+  color: #374151; /* dark text */
+  margin-top: 16px;
+  display: block;
 }
 
-input:focus,
-select:focus {
-    border-color: #3498db;
-    outline: none;
+/* ===== Inputs & Selects ===== */
+.page-container input[type="text"],
+.page-container input[type="datetime-local"],
+.page-container select {
+  width: 100%;
+  padding: 12px 14px;
+  margin-top: 6px;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  font-size: 14px;
+  transition: border 0.3s ease, box-shadow 0.3s ease;
 }
 
-button {
-    width: 100%;
-    padding: 12px;
-    background-color: #3498db;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s;
+.page-container input:focus,
+.page-container select:focus {
+  border-color: #00b4d8; /* gradient blue accent */
+  outline: none;
+  box-shadow: 0 2px 8px rgba(0,180,216,0.25);
 }
 
-button:hover {
-    background-color: #2980b9;
+/* ===== Radio Buttons ===== */
+.page-container .form-check-input {
+  margin-right: 8px;
+  accent-color: #0077b6; /* theme blue */
 }
 
-p {
-    text-align: center;
-    margin-top: 20px;
-    color: #27ae60;
-    font-weight: bold;
+.page-container input[type="radio"] + label {
+  margin-right: 20px;
+}
+
+/* ===== Submit Button ===== */
+.page-container button[type="submit"] {
+  margin-top: 24px;
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(90deg, #0077b6, #00b4d8); /* blue gradient */
+  border: none;
+  border-radius: 12px;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+
+.page-container button[type="submit"]:hover {
+  background: linear-gradient(90deg, #005f8c, #0096c7);
+  transform: translateY(-2px);
+}
+
+/* ===== Message Text ===== */
+.page-container p {
+  text-align: center;
+  font-size: 14px;
+  color: #0077b6; /* success / info in blue */
+  margin-top: 18px;
+}
+
+/* ===== Animation ===== */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 600px) {
+  .page-container {
+    margin: 80px 10px;
+  }
+  .page-container form {
+    padding: 20px;
+  }
 }

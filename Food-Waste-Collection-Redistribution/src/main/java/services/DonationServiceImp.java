@@ -9,8 +9,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import entities.Claims;
 import entities.Donation;
+import entities.Users;
 import jakarta.transaction.Transactional;
+import repositories.ClaimsRepository;
 import repositories.DonationRepository;
 
 @Service
@@ -19,6 +22,9 @@ public  class DonationServiceImp implements DonationService {
 
 	@Autowired
 	DonationRepository donationRepository;
+	
+	@Autowired
+	ClaimsRepository claimsRepository;
 	
 	@Override
 	public Donation getDonationById(int i) {
@@ -79,11 +85,16 @@ public  class DonationServiceImp implements DonationService {
 	}
 
 	
-	public List<Donation> getDonationsByUserId(int id) {
-		
-		
-		return donationRepository.findByUserUserId(id);
-	}
+
+	
+	 @Override
+	    public List<Donation> getMyDonations(Integer donorId) {
+	        return donationRepository.findByDonorUserId(donorId);
+	    }
+
+	    public List<Claims> getClaimForDonation(Integer donationId) {
+	        return claimsRepository.findByDonationDonationId(donationId);
+	    }
 
 	@Override
 	public Page<Donation> listAllDonations(String search, String status, String meal,
@@ -93,6 +104,24 @@ public  class DonationServiceImp implements DonationService {
 	}
 
 
+	public long getDonationsMadeCount(Users donor) {
+        if (donor == null) return 0;
+        return donationRepository.countByDonor(donor);
+    }
+
+    /**
+     * Get count of donations received by a user (as receiver)
+     */
+	@Override
+    public long getDonationsReceivedCount(Users receiver) {
+        if (receiver == null) return 0;
+        return claimsRepository.countByUser(receiver);
+    }
+
+	public int countByUserAsReceiver(Users user) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 
 
  

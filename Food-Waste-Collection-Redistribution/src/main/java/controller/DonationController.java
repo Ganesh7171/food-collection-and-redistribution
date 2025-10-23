@@ -1,13 +1,12 @@
 package controller;
 
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import entities.Claims;
 import entities.Donation;
 import entities.Users;
 import jakarta.servlet.http.HttpSession;
@@ -90,16 +90,40 @@ public class DonationController {
 	}
 
 	
-	@GetMapping("/listMyDonations")
-	public String getMyDonations(HttpSession session,Model model) {
-		
-		Users user = (Users) session.getAttribute("Users");
-		System.out.println(user.getUserId());
-		List<Donation> donations = donationService.getDonationsByUserId(user.getUserId());
-		model.addAttribute("donations",donations);
+	/*
+	 * @GetMapping("/listMyDonations") public String getMyDonations(HttpSession
+	 * session,Model model) {
+	 * 
+	 * Users user = (Users) session.getAttribute("Users");
+	 * System.out.println(user.getUserId()); List<Donation> donations =
+	 * donationService.getDonationsByUserId(user.getUserId());
+	 * model.addAttribute("donations",donations);
+	 * 
+	 * return "MyDonations"; }
+	 */
 	
-		return "MyDonations";
+	
+	@GetMapping("/listMyDonations")
+	public String viewMyDonations(Model model, HttpSession session) {
+	    Users currentUser = (Users) session.getAttribute("Users");
+
+	    List<Donation> myDonations = donationService.getMyDonations(currentUser.getUserId());
+
+	    // attach claims for each donation
+	    Map<Integer, List<Claims>> claimsMap = new HashMap<>();
+	    for (Donation donation : myDonations) {
+	        List<Claims> claims = donationService.getClaimForDonation(donation.getDonationId());
+	        if (claims != null && !claims.isEmpty()) {
+	            claimsMap.put(donation.getDonationId(), claims);
+	        }
+	    }
+
+	    model.addAttribute("donations", myDonations);
+	    model.addAttribute("claimsMap", claimsMap);
+
+	    return "mydonations";
 	}
+
 
 	
 }

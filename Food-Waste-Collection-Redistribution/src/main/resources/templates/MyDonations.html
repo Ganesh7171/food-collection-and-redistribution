@@ -1,60 +1,74 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>All Donations</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f0f8f5;
-            padding: 20px;
-        }
-        .card {
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            padding: 20px;
-            margin: 20px auto;
-            max-width: 700px;
-        }
-        h2 {
-            color: #2e7d32;
-        }
-        .info-row {
-            margin: 10px 0;
-        }
-        .label {
-            font-weight: bold;
-            color: #555;
-        }
-        .value {
-            margin-left: 10px;
-            color: #222;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>My Donations</title>
+  <link rel="stylesheet" th:href="@{/css/mydonations.css}" />
+  <link rel="stylesheet" th:href="@{/css/mydonations.css}" />
+  <script th:src="@{/js/sidebar.js}" defer></script>
 </head>
 <body>
 
-<div th:each="d : ${donations}" class="card">
-    <h2>Donation Details</h2>
-    <div class="info-row"><span class="label">Donation ID:</span><span class="value" th:text="${d.donationId}"></span></div>
-    <div class="info-row"><span class="label">Meal Type:</span><span class="value" th:text="${d.mealType}"></span></div>
-    <div class="info-row"><span class="label">Address:</span><span class="value" th:text="${d.address}"></span></div>
-    <div class="info-row"><span class="label">Status:</span><span class="value" th:text="${d.status}"></span></div>
-    <div class="info-row"><span class="label">Google Plus Code:</span><span class="value" th:text="${d.googlePlusCode}"></span></div>
-    <div class="info-row"><span class="label">Claim Time:</span><span class="value" th:text="${#temporals.format(d.claimTime, 'yyyy-MM-dd HH:mm')}"></span></div>
+  <!-- Header -->
+  <div th:replace="fragments/header :: app-header"></div>
 
-    <hr style="margin: 20px 0;">
+  <!-- Search Bar -->
+  <div class="search-bar">
+    <form method="get" th:action="@{/mydonations}">
+      <input type="text" name="search" th:value="${search}" placeholder="Search by Donation ID..." />
+      <button type="submit">🔍 Search</button>
+    </form>
+  </div>
 
-    <h2>User Details</h2>
-    <div class="info-row"><span class="label">User ID:</span><span class="value" th:text="${d.user.userId}"></span></div>
-    <div class="info-row"><span class="label">Username:</span><span class="value" th:text="${d.user.username}"></span></div>
-    <div class="info-row"><span class="label">Email:</span><span class="value" th:text="${d.user.emailAddress}"></span></div>
-    <div class="info-row"><span class="label">Phone:</span><span class="value" th:text="${d.user.phoneNumber}"></span></div>
-    <div class="info-row"><span class="label">User Type:</span><span class="value" th:text="${d.user.userType}"></span></div>
-    <div class="info-row"><span class="label">User Address:</span><span class="value" th:text="${d.user.address}"></span></div>
-    <div class="info-row"><span class="label">Google Plus Code:</span><span class="value" th:text="${d.user.googlePlusCode}"></span></div>
-</div>
+  <!-- Donation Cards -->
+  <div class="card-container">
+    <div th:each="d : ${donations}" class="donation-card">
+      
+      <!-- Card Header -->
+      <div class="card-header">
+        <span class="meal-type" th:text="${d.mealType}">Meal</span>
+        <span class="status" th:text="${d.status}" th:classappend="${d.status}">Status</span>
+      </div>
+
+      <!-- Card Body -->
+      <div class="card-body">
+        <div class="pair"><span class="k">Donation ID:</span><span class="v" th:text="${d.donationId}"></span></div>
+        <div class="pair"><span class="k">Claim Time:</span>
+          <span class="v" th:text="${d.claims != null and !d.claims.isEmpty() ? #temporals.format(d.claims[0].claimTime,'yyyy-MM-dd HH:mm') : 'Not Claimed'}"></span>
+        </div>
+        <div class="pair"><span class="k">Address:</span><span class="v" th:text="${d.address}"></span></div>
+        <div class="pair"><span class="k">Google Plus Code:</span><span class="v" th:text="${d.googlePlusCode}"></span></div>
+      </div>
+
+      <!-- Toggle Claimer Details -->
+      <button class="toggle-claimer-btn">👤 View Claimer Details</button>
+
+      <!-- Claimer Details -->
+      <div class="claimer-details">
+        <div th:if="${d.claims != null and !d.claims.isEmpty()}" th:each="c : ${d.claims}">
+          <div class="pair"><span class="k">Username:</span>
+            <span class="v"><a th:href="@{/user/info/{id}(id=${c.user.userId})}" th:text="${c.user.username}"></a></span>
+          </div>
+          <div class="pair"><span class="k">Email:</span><span class="v" th:text="${c.user.emailAddress}"></span></div>
+          <div class="pair"><span class="k">Phone:</span><span class="v" th:text="${c.user.phoneNumber}"></span></div>
+          <div class="pair"><span class="k">User Type:</span><span class="v" th:text="${c.user.userType}"></span></div>
+          <div class="pair"><span class="k">Google Plus Code:</span><span class="v" th:text="${c.user.googlePlusCode}"></span></div>
+        </div>
+        <div th:if="${d.claims == null or d.claims.isEmpty()}">❌ Not Claimed</div>
+      </div>
+
+    </div>
+  </div>
 
 </body>
+<script> document.addEventListener('DOMContentLoaded', () => {
+	  const buttons = document.querySelectorAll('.toggle-claimer-btn');
+	  buttons.forEach(btn => {
+	    btn.addEventListener('click', () => {
+	      const details = btn.nextElementSibling; // only next sibling
+	      details.classList.toggle('show');
+	    });
+	  });
+	});
+</script>
 </html>

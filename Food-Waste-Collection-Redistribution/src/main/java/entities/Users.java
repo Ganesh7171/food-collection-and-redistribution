@@ -1,15 +1,7 @@
 package entities;
 
+import jakarta.persistence.*;
 import java.util.List;
-
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "Users")
@@ -40,11 +32,43 @@ public class Users {
 
     @Column(name = "google_plus_code")
     private String googlePlusCode;
-    
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Claims> claims;
 
-    // Getters
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private NgoDetails ngoDetails;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private VolunteerDetails volunteerDetails;
+
+
+
+    public List<Claims> getClaims() {
+		return claims;
+	}
+
+	public void setClaims(List<Claims> claims) {
+		this.claims = claims;
+	}
+
+	public NgoDetails getNgoDetails() {
+		return ngoDetails;
+	}
+
+	public void setNgoDetails(NgoDetails ngoDetails) {
+		this.ngoDetails = ngoDetails;
+	}
+
+	public VolunteerDetails getVolunteerDetails() {
+		return volunteerDetails;
+	}
+
+	public void setVolunteerDetails(VolunteerDetails volunteerDetails) {
+		this.volunteerDetails = volunteerDetails;
+	}
+
+	// Getters
     public int getUserId() {
         return userId;
     }

@@ -1,73 +1,98 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>Dashboard - Food Waste Collection</title>
-  <!-- Common theme -->
-  <link rel="stylesheet" th:href="@{/css/Dashboard.css}" />
-  <link rel="stylesheet" th:href="@{/css/loader.css}" />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <title>Dashboard - Food Waste Collection</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<script th:src="@{/js/sidebar.js}" defer></script>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f4f8ff;
+        }
+        h1 { text-align: center; color: #004080; margin-top: 20px; }
+
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            width: 90%;
+            margin: 30px auto;
+        }
+
+        .card {
+            background: linear-gradient(135deg, #004080, #007BFF);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        .card:hover { transform: translateY(-5px); }
+
+        .card h2 { margin-top: 0; font-size: 1.5em; }
+        .card p { font-size: 1.2em; }
+
+        .activity-feed {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+        }
+
+        .activity-feed h2 { color: #004080; margin-top: 0; }
+        .activity-feed ul { list-style: none; padding-left: 0; }
+        .activity-feed li {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+            font-size: 0.95em;
+        }
+        .activity-feed li:last-child { border-bottom: none; }
+    </style>
 </head>
 <body>
 
-  <!-- Loader -->
-  <div id="loader-wrapper">
-    <div id="loader">🍱</div>
-  </div>
+<div th:replace="fragments/header :: app-header"></div>
 
-  <!-- Common Header -->
-  <div th:replace="fragments/header :: app-header"></div>
+<h1>Welcome, <span th:text="${session.Users.username}">User</span></h1>
 
-  <!-- Common Sidebar -->
-  <div th:replace="fragments/sidebar :: app-sidebar"></div>
+<div class="dashboard-container">
 
-  <!-- Page Content -->
-  <div id="pageContent" class="page-content">
-    <main class="main-container">
-      <section class="card">
-        <h2>Dashboard</h2>
-        <p>Welcome to your dashboard. Here you can track food donations and requests.</p>
-      </section>
-      <section class="card">
-        <h2>Total Count</h2>
-        <p>Show analytics or total donations here.</p>
-      </section>
-      <section class="card">
-        <h2>Track F.D</h2>
-        <p>Tracking and claim requests will be shown here.</p>
-      </section>
-    </main>
+    <!-- Total Donations Made -->
+    <div class="card">
+        <h2>Total Donations Made</h2>
+        <p th:text="${totalDonationsMade}">0</p>
+    </div>
 
-    <!-- Common Footer -->
-    <div th:replace="fragments/footer :: app-footer"></div>
-  </div>
+    <!-- Total Donations Received -->
+    <div class="card">
+        <h2>Total Donations Received</h2>
+        <p th:text="${totalDonationsReceived}">0</p>
+    </div>
 
-  <!-- Scripts -->
-  <script>
-    // Loader
-    window.addEventListener('load', function () {
-      const loader = document.getElementById('loader-wrapper');
-      loader.style.opacity = '0';
-      setTimeout(() => loader.style.display = 'none', 500);
-    });
+    <!-- Pending Requests -->
+    <div class="card">
+        <h2>Pending Requests</h2>
+        <p th:text="${pendingRequests}">0</p>
+    </div>
 
-    // Show loader on navigation
-    document.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', function () {
-        const href = this.getAttribute('href');
-        if (href && !href.startsWith('#') && !href.startsWith('javascript')) {
-          const loader = document.getElementById('loader-wrapper');
-          loader.style.display = 'flex';
-          loader.style.opacity = '1';
-        }
-      });
-    });
+</div>
 
-    // Sidebar toggle
-    function toggleNav() {
-      document.getElementById('sideNav').classList.toggle('open');
-      document.getElementById('pageContent').classList.toggle('shifted');
-    }
-  </script>
+<!-- Activity Feed -->
+<div class="dashboard-container">
+    <div class="activity-feed">
+        <h2>Recent Activity</h2>
+        <ul>
+            <li th:each="act : ${recentActivities}" th:text="${act}">No activity yet</li>
+        </ul>
+    </div>
+</div>
+
+<div th:replace="fragments/footer :: app-footer"></div>
+
 </body>
 </html>

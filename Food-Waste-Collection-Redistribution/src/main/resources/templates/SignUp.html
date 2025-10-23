@@ -1,54 +1,105 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta charset="UTF-8">
     <title>Sign Up</title>
-    
-    		
-
-					<link rel="stylesheet" th:href="@{/css/SignUp.css}">
-
-					
-		
+    <link rel="stylesheet" th:href="@{/css/SignUp.css}">
 </head>
 <body>
-    <h2>Sign Up Form</h2>
+    <nav>
+        <div class="logo">Food Donation Management System</div>
+        <div class="menu">
+            <a href="/">Home</a>
+            <a href="#">Gallery</a>
+            <a href="#">About</a>
+            <a href="#">Contact</a>
+        </div>
+    </nav>
 
-    <form th:action="@{/fwc/saveUser}" th:object="${newUser}" method="post">
-        
-	<label>User Type:</label>
-	<select th:field="*{userType}">
-	    <option value="Restaurant">Restaurant</option>
-	    <option value="NGO">NGO</option>
-	    <option value="Volunteer">Volunteer</option>
-	</select><br/>
+    <div class="signup-container">
+        <form th:action="@{/fwc/saveUser}" th:object="${newUser}" method="post" class="signup-flex">
+            <!-- Left Column: User Info -->
+            <div class="signup-left">
+                <h2>Create Account</h2>
+                <label>User Type</label>
+                <select th:field="*{userType}" onchange="toggleExtraFields(this.value)">
+                    <option value="Restaurant">Restaurant</option>
+                    <option value="NGO">NGO</option>
+                    <option value="Volunteer">Volunteer</option>
+                </select>
 
-        <label>Name:</label>
-        <input type="text" th:field="*{username}" /><br/>
+                <label>Name</label>
+                <input type="text" th:field="*{username}" placeholder="Enter your name" required>
 
-        <label>Address:</label>
-        <input type="text" th:field="*{address}" /><br/>
+                <label>Address</label>
+                <input type="text" th:field="*{address}" placeholder="Enter your address" required>
 
-        <label>Mobile Number:</label>
-        <input type="text" th:field="*{phoneNumber}" /><br/>
+                <label>Mobile Number</label>
+                <input type="text" th:field="*{phoneNumber}" placeholder="Enter your mobile number" required>
 
-        <label>Email Address:</label>
-        <input type="email" th:field="*{emailAddress}" /><br/>
+                <label>Email</label>
+                <input type="email" th:field="*{emailAddress}" placeholder="Enter your email" required>
 
-       <!--  <label>Username:</label>
-        <input type="text" th:field="*{username}" /><br/> -->
+                <label>Password</label>
+                <input type="password" th:field="*{password}" placeholder="Enter your password" required>
 
-        <label>Password:</label>
-        <input type="password" th:field="*{password}" /><br/>
+                <label>Google Plus Code</label>
+                <input type="text" th:field="*{googlePlusCode}" placeholder="Enter Google Plus Code">
 
-       <!--  <label>Confirm Password:</label>
-        <input type="password" th:field="*{confirmPassword}" /><br/>
- -->
-        <label>Google Plus Code:</label>
-        <input type="text" th:field="*{googlePlusCode}" /><br/>
+                <button type="submit">Sign Up</button>
+                <p th:text="${message}"></p>
+            </div>
 
-        <button type="submit">Sign Up</button>
-    </form>
+            <!-- Right Column: Extra Fields -->
+            <div class="signup-right" id="extraFields">
+                <!-- NGO Fields -->
+                <div id="ngoFields">
+                    <h3>NGO Details</h3>
+                    <label>Organization Name</label>
+                    <input type="text" th:field="*{ngoDetails.organizationName}" placeholder="NGO / Organization Name">
 
-    <p th:text="${message}"></p>
+                    <label>Donation Types</label>
+                    <input type="text" th:field="*{ngoDetails.donationTypes}" placeholder="Food, Clothes, Books">
+
+                    <label>Visiting Hours</label>
+                    <input type="text" th:field="*{ngoDetails.visitingHours}" placeholder="09:00 - 17:00">
+                </div>
+
+                <!-- Volunteer Fields -->
+                <div id="volunteerFields">
+                    <h3>Volunteer Details</h3>
+                    <label>Skills</label>
+                    <input type="text" th:field="*{volunteerDetails.skills}" placeholder="Cooking, Driving, Teaching">
+
+                    <label>Availability</label>
+                    <input type="text" th:field="*{volunteerDetails.availability}" placeholder="Mon-Fri, Weekends">
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function toggleExtraFields(userType) {
+            const extra = document.getElementById('extraFields');
+            const ngoFields = document.getElementById('ngoFields');
+            const volunteerFields = document.getElementById('volunteerFields');
+
+            if(userType === 'NGO') {
+                extra.style.display = 'flex';
+                ngoFields.style.display = 'block';
+                volunteerFields.style.display = 'none';
+            } else if(userType === 'Volunteer') {
+                extra.style.display = 'flex';
+                ngoFields.style.display = 'none';
+                volunteerFields.style.display = 'block';
+            } else {
+                extra.style.display = 'none';
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            document.getElementById('extraFields').style.display = 'none';
+        });
+    </script>
 </body>
 </html>

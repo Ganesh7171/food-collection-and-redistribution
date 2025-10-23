@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import entities.Claims;
+import entities.Users;
 import jakarta.transaction.Transactional;
 
 @Repository
@@ -20,25 +21,37 @@ public interface ClaimsRepository extends JpaRepository<Claims,Integer> {
 	
 	List<Claims> findByUserUserId(int userId, Sort sort);
 
-	Claims findByDonationDonationId(int donationId);
+	List<Claims> findByDonationDonationId(int donationId);
 
 	@Query(value="select * from claims where donation_id=:dId && claimer_user_id=:uId ", nativeQuery=true)
 	public Optional<Claims> claimChecker(@Param("dId") int donationId, @Param("uId")int userId );
 	
 
 	
-	  @Query("SELECT c FROM Claims c WHERE c.donation.user.userId = :myUserId AND c.user.userId <> :myUserId"
-	  ) List<Claims> findRequestsByOthersOnMyDonations(@Param("myUserId") int
-	  myUserId);
+	/*
+	 * @Query("SELECT c FROM Claims c WHERE c.donation.user.userId = :myUserId AND c.user.userId <> :myUserId"
+	 * ) List<Claims> findRequestsByOthersOnMyDonations(@Param("myUserId") int
+	 * myUserId);
+	 */
 	 
 	  @Modifying
 	  @Query("UPDATE Claims c SET c.claimStatus = :status WHERE c.claimId = :claimId")
 	  void updateClaimStatus(@Param("status") String status,@Param("claimId") int claimId);
 
+	  
+	  @Query(value = "SELECT c.* " +
+              "FROM claims c " +
+              "JOIN food_donation d ON c.donation_id = d.donation_id " +
+              "JOIN users du ON d.user_id = du.user_id " +
+              "WHERE du.user_id = :userId", nativeQuery = true)
+	  		List<Claims> findClaimsByDonorId(@Param("userId") int userId);
 
-
+	
+	  long countByUser(Users receiver);
 	 
 }
+
+
 	
 
 

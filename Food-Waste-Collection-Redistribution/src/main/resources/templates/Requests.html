@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Donation Requests</title>
+  <link rel="stylesheet" th:href="@{/css/mydonations.css}" />
+</head>
+<body>
+  <h1>Requests for Donation #<span th:text="${donation.donationId}"></span></h1>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Request ID</th>
+        <th>User</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr th:each="c : ${claims}">
+        <td th:text="${c.claimId}"></td>
+        <td th:text="${c.user.username}"></td>
+        <td th:text="${c.user.emailAddress}"></td>
+        <td th:text="${c.user.phoneNumber}"></td>
+        <td th:text="${c.status}"></td>
+        <td>
+          <form th:action="@{'/donations/claims/' + ${c.claimId} + '/approve'}" method="post" style="display:inline;">
+            <button type="submit">✅ Approve</button>
+          </form>
+          <form th:action="@{'/donations/claims/' + ${c.claimId} + '/reject'}" method="post" style="display:inline;">
+            <button type="submit">❌ Reject</button>
+          </form>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</body>
+</html>

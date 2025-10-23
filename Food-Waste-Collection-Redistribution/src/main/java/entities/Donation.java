@@ -36,7 +36,7 @@ public class Donation {
 
 	@ManyToOne
 	@JoinColumn(name = "user_id", referencedColumnName = "user_id")
-	private Users user;
+	private Users donor;
 	
 	
 
@@ -47,10 +47,10 @@ public class Donation {
 		this.claims = claims;
 	}
 	public Users getUser() {
-		return user;
+		return donor;
 	}
 	public void setUser(Users user) {
-		this.user = user;
+		this.donor = user;
 	}
 	public int getDonationId() {
 		return donationId;

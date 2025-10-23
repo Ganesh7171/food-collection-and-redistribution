@@ -3,14 +3,16 @@
 <head>
     <title>My Requests</title>
     <link rel="stylesheet" th:href="@{/css/myclaims.css}" />
+    
+    <script th:src="@{/js/sidebar.js}" defer></script>
 </head>
 <body>
 
     <!-- ✅ Include Header Fragment -->
-    <div th:replace="fragments/header :: app-header"></div>
-
+   	
+ <div th:replace="fragments/header :: app-header"></div>
     <div class="container mt-5">
-        <h2>My Cart</h2>
+        <h1>My Cart</h1>
 
         <table class="table table-bordered">
             <thead class="thead-dark">
@@ -63,7 +65,7 @@
         </table>
 
         <!-- ✅ Submit button -->
-        <button type="submit" class="btn btn-primary">Submit Claim</button>
+        <!-- <button type="submit" class="btn btn-primary">Submit Claim</button> -->
 
         <p id="donationId"></p>
     </div>
