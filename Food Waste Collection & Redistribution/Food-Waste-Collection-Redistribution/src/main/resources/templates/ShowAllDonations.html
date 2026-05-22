@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Donations Table</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap 3.4 CDN -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        h2 {
+            margin-bottom: 30px;
+        }
+
+        .modal-body strong {
+            width: 150px;
+            display: inline-block;
+        }
+
+        /* Center modal and animate */
+        .modal-dialog {
+            margin-top: 15%;
+            transition: all 0.4s ease-in-out;
+            transform: translateY(-30px);
+            opacity: 0;
+        }
+
+        .modal.fade.in .modal-dialog {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* Blurred modal background */
+        .modal-backdrop.in {
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+        }
+    </style>
+
+    <script>
+        // Optional: Auto-close modals after 5 seconds
+        $(document).ready(function () {
+            $('.modal').on('shown.bs.modal', function () {
+                let modal = $(this);
+                setTimeout(function () {
+                    modal.modal('hide');
+                }, 5000); // 5000 ms = 5 seconds
+            });
+        });
+    </script>
+</head>
+<body>
+<div class="container mt-5">
+    <h2>Donations</h2>
+    <table class="table table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th>Type</th>
+                <th>Claim Time</th>
+                <th>Status</th>
+                <th>Details</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="donation, stat : ${donations}">
+                <td th:text="${donation.mealType}">Meal Type</td>
+                <td th:text="${donation.claimTime}">Claim Time</td>
+                <td th:text="${donation.status}">Status</td>
+                <td>
+                    <button class="btn btn-info" type="button"
+                            th:attr="data-toggle='modal', data-target='#detailsModal-' + ${stat.index}">
+                        View More
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal Template -->
+<div th:each="donation, stat : ${donations}"
+     th:id="'detailsModal-' + ${stat.index}"
+     class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Donation Details</h4>
+            </div>
+
+            <div class="modal-body">
+                <p><strong>Address:</strong> <span th:text="${donation.address}">Address</span></p>
+                <p>
+                    <strong>Google Plus Code:</strong>
+                    <span th:text="${donation.googlePlusCode}">Code</span>
+                    <a class="btn btn-xs btn-primary" style="margin-left:10px;"
+                       th:href="'https://www.google.com/maps/search/?api=1&query=' + ${donation.googlePlusCode}"
+                       target="_blank">
+                        View on Map
+                    </a>
+                </p>
+                <p><strong>User:</strong> 
+                    <span th:text="${donation.user != null ? donation.user.username : 'N/A'}">User</span> <br>
+                    
+                </p>
+                <p><strong>Mobile Number:</strong> 
+                    <span th:text="${donation.user != null ? donation.user.phoneNumber: 'N/A'}">Mobile Number</span> <br>
+                    
+                </p>
+            </div>
+
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Donation Success</title>
+    <link rel="stylesheet" th:href="@{/css/Dashboard.css}" />
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #fffbe6;
+            flex-direction: column;
+            font-family: Arial, sans-serif;
+        }
+
+        .success-message {
+            font-size: 32px;
+            color: #4CAF50;
+            animation: bounce 1s ease infinite alternate;
+        }
+
+        .donation-id {
+            font-size: 24px;
+            margin-top: 10px;
+            color: #333;
+        }
+
+        @keyframes bounce {
+            0%   { transform: translateY(0); }
+            100% { transform: translateY(-10px); }
+        }
+
+        .icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+            animation: pulse 1.5s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(0.95);
+                opacity: 0.7;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="icon">🍛</div>
+    <div class="success-message">Total Hungry Stomachs Filled!</div>
+    <div class="donation-id">Donation ID: <span th:text="${donationId}">#000</span></div>
+</body>
+<script>
+    setTimeout(function() {
+        window.location.href = "/fwc/Dashboard"; // Change to your desired page
+    }, 5000);
+</script>
+
+</html>
+	

@@ -1,0 +1,43 @@
+@charset "ISO-8859-1";
+body {
+	background-color: black;
+     background-image:url(log.jpg);
+    background-repeat: no-repeat;
+	background-size:cover;
+}
+.login { 
+	width:300px;
+	margin: auto;
+	border:0px #CCC solid;
+	padding:30px 30px;
+	background-color:black;
+	color:#FFF;
+	opacity:0.8;
+  
+}
+     
+.field { 
+	background: rgba(212, 151, 38, 0.863);
+	border:1px #03306b solid;
+	padding:10px;
+	margin:5px 25px;
+	width:215px;
+	color:#FFF;
+ }
+
+.login h1, p, .chbox, .btn {
+	margin-left:25px;
+	color:#fff;
+}
+
+.btn {
+	background-color:rgba(212, 151, 38, 0.863);
+	border:1px #03306b solid;
+	padding:10px 30px;
+	font-weight:bold;
+	margin:25px 25px;
+}
+
+.forgot {
+	color:#fff;
+}

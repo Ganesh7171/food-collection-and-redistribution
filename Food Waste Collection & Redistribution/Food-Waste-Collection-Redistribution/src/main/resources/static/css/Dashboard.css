@@ -1,0 +1,126 @@
+/* General Page Setup */
+body {
+    margin: 0;
+    font-family: 'Open Sans', sans-serif;
+    background-color: #f6fef5;
+    color: #333;
+}
+
+/* Header */
+.header {
+    background-color: #2e7d32;
+    color: white;
+    padding: 20px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-image: url('/images/food-banner.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 2em;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+.header-icon button {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    font-size: 1.8em;
+    cursor: pointer;
+    border-radius: 50%;
+    padding: 10px;
+}
+
+/* Container */
+.container {
+    display: flex;
+    min-height: 80vh;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 220px;
+    background-color: #a5d6a7;
+    padding: 20px 0;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    padding: 12px 25px;
+}
+
+.sidebar ul li a {
+    text-decoration: none;
+    color: #1b5e20;
+    font-weight: bold;
+}
+
+.sidebar ul li a:hover {
+    background-color: #81c784;
+    display: block;
+    border-radius: 5px;
+}
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    padding: 30px;
+    background-color: #ffffff;
+}
+
+.main-content section {
+    background-color: #e8f5e9;
+    margin-bottom: 20px;
+    padding: 20px;
+    border-left: 6px solid #388e3c;
+    border-radius: 4px;
+}
+
+/* Admin Section */
+.admin-section {
+    text-align: center;
+    padding: 20px;
+    background-color: #c8e6c9;
+    border-top: 1px solid #81c784;
+}
+
+/* loader.css */
+#loader-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #fff;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.5s ease;
+}
+
+#loader {
+    font-size: 60px;
+    animation: pulse 2s infinite ease-in-out;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(0.95);
+        opacity: 0.7;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 1;
+    }
+}
+
+ 	

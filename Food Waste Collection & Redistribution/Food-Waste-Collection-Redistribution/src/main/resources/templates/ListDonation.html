@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:inline="javascript">
+<head>
+<title>Food Donation Form</title>
+<link rel="stylesheet" th:href="@{/css/ListDonation.css}" />
+
+
+
+</head>
+
+<body>
+	<h2>Food Donation Entry</h2>
+
+	<form th:action="@{/fwc/submitDonation}" th:object="${donation}"
+		method="post" enctype="multipart/form-data">
+
+		<!-- Meal Type Dropdown -->
+		<label>Meal Type:</label> <select th:field="*{mealType}">
+			<option value="Breakfast">Breakfast</option>
+			<option value="Lunch">Lunch</option>
+			<option value="Snacks">Snacks</option>
+			<option value="Dinner">Dinner</option>
+		</select><br />
+
+		<!-- Address (Auto-populated from User) -->
+		<label for="enterNew">Address:</label>
+		<input class="form-check-input" type="radio" name="addressOption" id="useSaved" value="saved" onclick="toggleAddress(true)" />Use Saved Address   
+		
+
+		<!-- Radio: Enter new address -->
+		<input class="form-check-input" type="radio" name="addressOption" id="enterNew" value="custom" onclick="toggleAddress(false)" />Enter New Address
+		<br>
+		<br>
+
+		<!-- Address input -->
+		<input type="text" id="addressInput" th:field="*{address}" />
+		<script> function toggleAddress(useSaved) { 
+					const addressInput = document.getElementById("addressInput");
+					if (useSaved) {  	
+						addressInput.value = /*[[${session.Users.address}]]*/ '';
+					addressInput.readOnly = true; }
+					else { 
+						addressInput.value = ''; 
+						addressInput.readOnly = false; 
+	} }
+	// Optional: Automatically trigger when the page loads window.onload = function () 
+	{ const saved = document.getElementById("useSaved"); 
+	if (saved.checked) { toggleAddress(true);
+	} }; </script>
+		<!-- State Dropdown -->
+		<label>Status:</label> <select th:field="*{status}">
+			<option value="Active">Active</option>
+			<option value="Inactive">Inactive</option>
+		</select><br />
+
+		<!-- Google Map Key -->
+		<label>Google Map Plus Code:</label> <input type="text"
+			th:field="*{googlePlusCode}" /><br />
+
+		<!-- Claim Time -->
+		<label>Claim Time:</label> <input type="datetime-local"
+			th:field="*{claimTime}" /><br />
+
+
+		<!-- 	<input type="hidden" th:field="*{user.userId}" th:value="${session.Users.userId}"> -->
+
+
+
+
+
+		<!--  <!--  <!--  <!-- Upload Photos -->
+		<!--  <label>Upload Photos:</label>
+        <input type="file" th:field="*{photos}" multiple /><br/>
+ -->
+		<button type="submit">Submit</button>
+	</form>
+
+	<p th:text="${message}"></p>
+</body>
+</html>

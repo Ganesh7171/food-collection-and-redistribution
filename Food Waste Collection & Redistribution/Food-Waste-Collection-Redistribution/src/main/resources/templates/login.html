@@ -1,0 +1,36 @@
+
+
+<!DOCTYPE >
+<html >
+		<head>
+
+					<link rel="stylesheet" th:href="@{/log.css}">
+
+					<title>Login</title>
+		</head>
+	
+	<body>
+
+   						 <pre>
+    
+    
+    
+    
+    
+    					</pre>
+				<div class="login">
+
+								<h1>Login</h1>
+
+								<p>Please enter your Username and password</p>
+								<br><form action="/auth/logon" th:object="${loginRequest}"  method="post">
+  								<input class="field" type="text" placeholder="Username" name="username" id="name" required>  
+  								<input class="field" type="password" placeholder="Password" name="password" required>  
+  								<input class="chbox" type="checkbox" name="option" value="Remember">Remember Me<br/>
+ 								<input class="btn" type="submit" value="LOGIN">
+								<a href="Forgot.html" class="forgot">Forgot password?</a>
+								</form>
+				</div>
+
+		</body>
+</html>
