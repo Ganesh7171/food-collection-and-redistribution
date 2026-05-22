@@ -1,0 +1,192 @@
+/* =========================================
+   GLOBAL STYLING
+   ========================================= */
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #e0f0ff, #f0f8ff); /* light gradient for page background */
+    color: #003366;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 30px;
+    background: #ffffffcc; /* slightly transparent white for soft look */
+    border-radius: 16px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    animation: fadeIn 0.6s ease-in-out;
+}
+
+/* =========================================
+   HEADINGS
+   ========================================= */
+h2{
+    text-align: center;
+    color: #ffe066;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    letter-spacing: 1px;
+}
+h2::after {
+    content: "";
+    display: block;
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, #0077b6, #00b4d8);
+    margin: 8px auto 0;
+    
+}
+
+/* =========================================
+   TABLE STYLING
+   ========================================= */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    background: #ffffffcc; /* soft white background */
+}
+
+.table thead {
+    background: linear-gradient(90deg, #0077b6, #00b4d8); /* match top bar */
+    color: #ffffff;
+}
+
+.table thead th {
+    padding: 16px 14px;
+    font-weight: 600;
+    font-size: 15px;
+    text-align: left;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.table tbody tr {
+    background: #ffffffaa; /* soft white for rows */
+    border-bottom: 1px solid #e0e0e0;
+    transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.table tbody tr:hover {
+    background: #dbefff; /* light blue hover */
+    transform: scale(1.01);
+}
+
+.table td {
+    padding: 14px;
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+/* Table links */
+/* Table header links */
+.table thead a {
+    color: #fff; /* White links */
+    text-decoration: none;
+}
+
+.table thead a:hover {
+    color: #e0f7ff; /* Slight hover effect */
+    text-decoration: underline;
+}
+
+
+/* =========================================
+   BUTTONS
+   ========================================= */
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    border-radius: 25px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+}
+
+.btn-primary {
+    background: linear-gradient(90deg, #0077b6, #00b4d8);
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(90deg, #00b4d8, #0077b6);
+    transform: translateY(-2px);
+}
+
+.btn-info {
+    background: linear-gradient(90deg, #00b4d8, #0077b6);
+    color: #fff;
+}
+
+.btn-info:hover {
+    background: linear-gradient(90deg, #0077b6, #00b4d8);
+    transform: translateY(-2px);
+}
+
+/* =========================================
+   UTILITY
+   ========================================= */
+.mt-5 {
+    margin-top: 2.5rem;
+}
+
+/* =========================================
+   ANIMATION
+   ========================================= */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* =========================================
+   RESPONSIVE
+   ========================================= */
+@media (max-width: 768px) {
+    .container {
+        padding: 16px;
+    }
+
+    .table thead {
+        display: none; /* hide headers for mobile */
+    }
+
+    .table, .table tbody, .table tr, .table td {
+        display: block;
+        width: 100%;
+    }
+
+    .table tr {
+        margin-bottom: 14px;
+        border: 1px solid #ddd;
+        border-radius: 12px;
+        padding: 12px;
+        background: #ffffffaa;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+
+    .table td {
+        text-align: right;
+        position: relative;
+        padding-left: 55%;
+    }
+
+    .table td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 14px;
+        width: 45%;
+        padding-right: 10px;
+        font-weight: 600;
+        text-align: left;
+        color: #ffffff;
+    }
+}

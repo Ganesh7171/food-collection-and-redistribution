@@ -1,0 +1,163 @@
+@charset "ISO-8859-1";
+
+/* ========================================
+   LOGIN PAGE WITH HEADER - BLUE GRADIENT THEME
+   ======================================== */
+
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body & HTML */
+body, html {
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(to bottom right, #e6f0ff, #f9fbff);
+    color: #003366;
+    height: 100%;
+}
+
+/* ===== Header ===== */
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 50px;
+    background: linear-gradient(90deg, #0077b6, #00b4d8);
+    color: white;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+nav .logo {
+    font-size: 22px;
+    font-weight: bold;
+}
+
+nav .menu a {
+    color: white;
+    margin-left: 20px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+nav .menu a:hover {
+    color: #ffd700;
+}
+
+/* ===== Login Wrapper ===== */
+.login-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 70px); /* header height offset */
+    padding: 20px;
+}
+
+/* ===== Login Box ===== */
+.login {
+    width: 340px;
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 6px 20px rgba(0, 119, 182, 0.2);
+    border-top: 4px solid #0077b6;
+    border-bottom: 4px solid #00b4d8;
+    text-align: center;
+}
+
+/* Heading */
+.login h1 {
+    color: #004080;
+    margin-bottom: 15px;
+    letter-spacing: 1px;
+}
+
+/* Description */
+.login p {
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+/* Input Fields */
+.field {
+    background: #f4f8ff;
+    border: 1px solid #bcdff5;
+    border-radius: 25px;
+    padding: 10px 15px;
+    margin: 10px 0;
+    width: 100%;
+    font-size: 14px;
+    color: #003366;
+    transition: all 0.3s ease;
+}
+
+.field:focus {
+    outline: none;
+    border-color: #0077b6;
+    box-shadow: 0 0 8px rgba(0, 180, 216, 0.4);
+}
+
+/* Buttons */
+.btn {
+    background: linear-gradient(90deg, #0077b6, #00b4d8);
+    border: none;
+    border-radius: 25px;
+    padding: 10px 30px;
+    color: white;
+    font-weight: 600;
+    margin-top: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 119, 182, 0.3);
+}
+
+.btn:hover {
+    background: linear-gradient(90deg, #00b4d8, #0077b6);
+    transform: scale(1.05);
+}
+
+/* Checkbox & Forgot Password */
+.chbox {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    margin-top: 10px;
+    color: #004080;
+    font-size: 13px;
+}
+
+.forgot {
+    color: #0077b6;
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 10px;
+    transition: color 0.3s ease;
+}
+
+.forgot:hover {
+    color: #00b4d8;
+}
+
+/* Placeholder Text */
+::placeholder {
+    color: #7a9cbf;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+    .login {
+        width: 90%;
+        padding: 20px;
+    }
+    nav {
+        flex-direction: column;
+        gap: 10px;
+        padding: 10px 20px;
+    }
+    nav .menu a {
+        margin-left: 0;
+    }
+}

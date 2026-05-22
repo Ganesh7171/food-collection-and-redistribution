@@ -1,0 +1,200 @@
+/* ===== Reset + Base ===== */
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: #f5f7fa;
+  color: #333;
+  transition: margin-left 0.3s ease;
+}
+
+/* ===== Header ===== */
+.site-header {
+  background: #ffffff; /* Blue header */
+  color: #fff;
+  display: flex;
+  align-items: center;
+  padding: 12px 20px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1200;
+}
+
+.hamburger-btn {
+  background: transparent;
+  border: none;
+  font-size: 26px;
+  cursor: pointer;
+  color: #fff;
+  margin-right: 12px;
+}
+
+.welcome-text {
+  flex: 1;
+  text-align: center;
+  margin: 0;
+  font-weight: 600;
+  font-size: 20px;
+}
+
+.username {
+  font-weight: 700;
+  font-size: 22px;
+  color: #ffe082; /* yellow accent */
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.icon-btn {
+  background: transparent;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  color: #fff;
+}
+
+/* ===== Sidebar ===== */
+/* ===== Sidebar ===== */
+.side-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 250px;
+  height: 100%;
+  background: #1565c0; /* darker blue */
+  color: #fff;
+  padding: 0;
+  transform: translateX(-100%); /* hidden by default */
+  transition: transform 0.3s ease;
+  z-index: 2000;  /* increased so it’s above header */
+  box-shadow: 2px 0 6px rgba(0,0,0,0.2);
+  display: flex;
+  flex-direction: column;
+}
+
+
+.side-nav.open {
+  transform: translateX(0); /* slide in */
+}
+
+/* Sidebar Header (sticky at top) */
+.side-nav-header {
+  position: sticky;
+  top: 0;
+  background: #1565c0;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+  z-index: 5;
+}
+
+.side-nav-header h2 {
+  font-size: 22px;
+  font-weight: 600;
+  margin: 0;
+  color: #ffe082; /* yellow for contrast */
+}
+
+.close-btn {
+  background: transparent;
+  border: none;
+  font-size: 30px;
+  cursor: pointer;
+  color: #fff;
+  line-height: 1;
+  transition: color 0.2s ease;
+}
+
+.close-btn:hover {
+  color: #ffcc80; /* lighter yellow */
+}
+
+/* Sidebar Menu */
+.side-nav ul {
+  list-style: none;
+  padding: 15px 20px;
+  margin: 0;
+  flex: 1;
+  overflow-y: auto; /* scrollable */
+}
+
+.side-nav ul li {
+  margin: 15px 0;
+}
+
+.side-nav ul li a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 16px;
+  display: block;
+  padding: 8px 10px;
+  border-radius: 6px;
+  transition: background 0.2s ease;
+}
+
+.side-nav ul li a:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.side-nav ul li a.active {
+  background: #1e88e5;
+  font-weight: 600;
+}
+
+/* Sidebar Footer */
+.side-nav-footer {
+  padding: 15px 20px;
+  font-size: 12px;
+  color: #eee;
+  border-top: 1px solid rgba(255,255,255,0.2);
+}
+
+/* ===== Overlay ===== */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease;
+  z-index: 1050;
+}
+
+.overlay.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* ===== Page Content ===== */
+.page-content {
+  transition: margin-left 0.3s ease;
+  padding: 20px;
+}
+
+.page-content.shifted {
+  margin-left: 250px; /* same as sidebar width */
+}
+
+/* ===== Optional: Custom Scrollbar ===== */
+.side-nav ul::-webkit-scrollbar {
+  width: 6px;
+}
+
+.side-nav ul::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+}
+
+.side-nav ul::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}

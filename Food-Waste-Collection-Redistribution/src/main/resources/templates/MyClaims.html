@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:inline="javascript">
+<head>
+    <title>My Requests</title>
+    <link rel="stylesheet" th:href="@{/css/myclaims.css}" />
+    
+    <script th:src="@{/js/sidebar.js}" defer></script>
+</head>
+<body>
+
+    <!-- ✅ Include Header Fragment -->
+   	
+ <div th:replace="fragments/header :: app-header"></div>
+    <div class="container mt-5">
+        <h1>My Cart</h1>
+
+        <table class="table table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                    <th>
+                        <a th:href="@{/claims/MyClaimRequests(sortField='donation.donationId', sortDir=${sortField == 'donation.donationId' ? reverseSortDir : 'asc'})}">
+                            Donation Id
+                            <span th:if="${sortField == 'donation.donationId'}"
+                                  th:text="${sortDir == 'asc' ? '↑' : '↓'}"></span>
+                        </a>
+                    </th>
+                    <th>
+                        <a th:href="@{/claims/MyClaimRequests(sortField='claimTime', sortDir=${sortField == 'claimTime' ? reverseSortDir : 'asc'})}">
+                            Claim Time
+                            <span th:if="${sortField == 'claimTime'}"
+                                  th:text="${sortDir == 'asc' ? '↑' : '↓'}"></span>
+                        </a>
+                    </th>
+                    <th>
+                        <a th:href="@{/claims/MyClaimRequests(sortField='claimstatus', sortDir=${sortField == 'claimstatus' ? reverseSortDir : 'asc'})}">
+                            Status
+                            <span th:if="${sortField == 'claimstatus'}"
+                                  th:text="${sortDir == 'asc' ? '↑' : '↓'}"></span>
+                        </a>
+                    </th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="myClaimRequest , stat:${myClaimRequests}">
+                    <td th:text="${myClaimRequest.donation.donationId}"
+                        th:attr="data-toggle='modal', data-target='#detailsModal-' + ${stat.index}">
+                        Donation Id
+                    </td>
+                    <td th:text="${myClaimRequest.claimTime}"
+                        th:attr="data-toggle='modal', data-target='#detailsModal-' + ${stat.index}">
+                        Claim Time
+                    </td>
+                    <td th:text="${myClaimRequest.claimStatus}"
+                        th:attr="data-toggle='modal', data-target='#detailsModal-' + ${stat.index}">
+                        Status
+                    </td>
+                    <td>
+                        <button class="btn btn-info" type="button" th:onclick="">
+                            Refer Back
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- ✅ Submit button -->
+        <!-- <button type="submit" class="btn btn-primary">Submit Claim</button> -->
+
+        <p id="donationId"></p>
+    </div>
+
+</body>
+</html>

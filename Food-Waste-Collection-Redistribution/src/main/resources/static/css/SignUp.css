@@ -1,0 +1,133 @@
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    
+}
+body, html {
+	
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(to bottom right, #e6f0ff, #f9fbff);
+    color: #003366;
+    min-height: 100vh;
+}
+
+/* Navigation */
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 50px;
+    background: linear-gradient(90deg, #0077b6, #00b4d8);
+    color: white;
+}
+nav .logo {
+    font-size: 22px;
+    font-weight: bold;
+}
+nav .menu a {
+    color: white;
+    margin-left: 20px;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+/* Signup Container */
+.signup-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* vertically centered like login */
+}
+
+/* Flex container for two columns */
+.signup-flex {
+    display: flex;
+    gap: 30px;
+    max-width: 900px;
+    width: 100%;
+}
+
+/* Left Column: Main Form */
+.signup-left, .signup-right {
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 119, 182, 0.2);
+}
+
+.signup-left {
+    flex: 1;
+}
+
+/* Right Column: Extra Fields */
+.signup-right {
+    flex: 1;
+    display: none; /* toggled by JS */
+}
+
+/* Headings */
+h2, h3 {
+    margin-bottom: 20px;
+    color: #004080;
+}
+
+/* Labels & Inputs */
+label {
+    display: block;
+    margin-top: 15px;
+    font-weight: 600;
+}
+input, select {
+    width: 100%;
+    padding: 10px 15px;
+    margin-top: 5px;
+    border-radius: 25px;
+    border: 1px solid #bcdff5;
+    font-size: 14px;
+    background: #f4f8ff;
+    color: #003366;
+    transition: all 0.3s ease;
+}
+input:focus, select:focus {
+    outline: none;
+    border-color: #0077b6;
+    box-shadow: 0 0 8px rgba(0, 180, 216, 0.4);
+}
+
+/* Submit Button */
+button {
+    margin-top: 25px;
+    width: 100%;
+    padding: 12px;
+    border: none;
+    background: linear-gradient(90deg, #0077b6, #00b4d8);
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 25px;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 119, 182, 0.3);
+    transition: all 0.3s ease;
+}
+button:hover {
+    background: linear-gradient(90deg, #00b4d8, #0077b6);
+    transform: scale(1.03);
+}
+
+/* Volunteer/NGO extra fields spacing */
+.signup-right input {
+    margin-bottom: 15px;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .signup-flex {
+        flex-direction: column;
+    }
+    .signup-right {
+        display: block;
+        margin-top: 20px;
+    }
+}

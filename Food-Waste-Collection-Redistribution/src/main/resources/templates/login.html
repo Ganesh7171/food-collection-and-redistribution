@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" th:href="@{/log.css}">
+    <title>Login</title>
+</head>
+<body>
+
+    <!-- Header -->
+    <nav>
+        <div class="logo">Food Donation Management System</div>
+        <div class="menu">
+            <a href="/">Home</a>
+            <a href="/auth/signup">Sign Up</a>
+            <a href="/auth/login">Login</a>
+        </div>
+    </nav>
+
+    <!-- Login Wrapper -->
+    <div class="login-wrapper">
+        <div class="login">
+            <h1>Login</h1>
+            <p>Please enter your Username and password</p>
+            <form action="/auth/logon" th:object="${loginRequest}" method="post">
+                <input class="field" type="text" placeholder="Username" name="username" id="name" required>  
+                <input class="field" type="password" placeholder="Password" name="password" required>  
+                <div class="chbox">
+                    <input type="checkbox" name="option" value="Remember"> Remember Me
+                </div>
+                <input class="btn" type="submit" value="LOGIN">
+                <br>
+                <a href="Forgot.html" class="forgot">Forgot password?</a>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>

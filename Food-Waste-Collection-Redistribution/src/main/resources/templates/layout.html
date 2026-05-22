@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title th:replace="${pageTitle}">Food Waste Collection</title>
+
+  <!-- Global CSS -->
+  <link rel="stylesheet" th:href="@{/css/theme.css}">
+  <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+</head>
+<body>
+  <!-- Header -->
+  <div th:replace="fragments/header :: app-header"></div>
+
+  <!-- Sidebar -->
+  <div th:replace="fragments/sidebar :: app-sidebar"></div>
+
+  <!-- Page Content -->
+  <main id="pageContent" class="page-content">
+    <div th:replace="${content}"></div>
+  </main>
+
+  <!-- Footer -->
+  <div th:replace="fragments/footer :: app-footer"></div>
+
+  <!-- Global JS -->
+  <script th:src="@{/js/sidebar.js}"></script>
+</body>
+</html>
+
+<!-- ✅ Define the fragment once, not inside <head> -->
+<th:block th:fragment="layout(pageTitle, content)"></th:block>

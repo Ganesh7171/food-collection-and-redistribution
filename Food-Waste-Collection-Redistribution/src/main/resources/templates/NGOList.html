@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <title>NGO & Welfare Homes</title>
+  <style>
+    body { font-family: 'Segoe UI'; background: linear-gradient(to bottom, #e6f0ff, #f4f8ff); margin: 0; padding: 0; }
+    h1 { text-align: center; color: #004080; margin-top: 20px; }
+
+    .ngo-container {
+      width: 90%; margin: 20px auto;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .ngo-card {
+      background: white; padding: 20px; border-radius: 12px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+      border-left: 6px solid #007BFF;
+      transition: transform 0.3s ease;
+    }
+    .ngo-card:hover { transform: translateY(-5px); }
+
+    .ngo-card img {
+      width: 100%;
+      height: auto;
+      max-height: 200px;
+      object-fit: contain; /* show full image */
+      border-radius: 12px;
+      margin-bottom: 12px;
+      background: #f0f4ff; /* subtle placeholder background */
+    }
+
+    .ngo-card h3 { color: #007BFF; margin-bottom: 8px; }
+    .ngo-card p { margin: 4px 0; }
+
+    .btn-book, .slot-btn {
+      background: linear-gradient(to right, #004080, #007BFF);
+      color: white;
+      padding: 8px 16px; border: none; border-radius: 8px; cursor: pointer;
+      margin-top: 8px; transition: all 0.3s ease;
+    }
+    .btn-book:hover, .slot-btn:hover { background: linear-gradient(to right, #003366, #0056b3); }
+    .slot-btn.disabled { background: #ccc; cursor: not-allowed; }
+
+    .booking-modal {
+      display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.4); z-index: 10; justify-content: center; align-items: center;
+    }
+
+    .booking-content {
+      background: white; padding: 25px; border-radius: 14px; width: 360px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.2);
+    }
+
+    .booking-content label { display: block; margin-top: 12px; font-weight: 600; }
+    .booking-content input[type="text"], .booking-content input[type="date"], .booking-content select {
+      width: 100%; padding: 8px; margin-top: 6px; border-radius: 6px; border: 1px solid #ccc;
+    }
+  </style>
+  
+  <script th:src="@{/js/sidebar.js}" defer></script>
+</head>
+<body>
+
+<div th:replace="fragments/header :: app-header"></div>
+
+<h1>Registered NGOs & Welfare Homes</h1>
+
+<div class="ngo-container">
+  <div th:each="ngo : ${ngos}" class="ngo-card">
+    <img th:src="@{'/ngo/ngo-image/' + ${ngo.ngoId}}" alt="NGO Image"/>
+
+    <h3 th:text="${ngo.organizationName}"></h3>
+    <p><strong>Location:</strong> <span th:text="${ngo.user.googlePlusCode}"></span></p>
+    <p><strong>Accepted Donations:</strong> <span th:text="${ngo.donationTypes}"></span></p>
+    <p><strong>Contact:</strong> <span th:text="${ngo.user.phoneNumber}"></span></p>
+    <p><strong>Email:</strong> <span th:text="${ngo.user.emailAddress}"></span></p>
+    <p><strong>Visiting Hours:</strong> <span th:text="${ngo.visitingHours}"></span></p>
+
+    <div style="margin-top:10px;">
+      <label>Other Donations:</label>
+      <input type="text" placeholder="Enter other items" th:id="'other_'+${ngo.ngoId}" />
+    </div>
+
+    <button class="btn-book" th:onclick="'openBookingModal(' + ${ngo.ngoId} + ')'">Book a Slot</button>
+  </div>
+</div>
+
+<!-- Booking Modal -->
+<div id="bookingModal" class="booking-modal">
+  <div class="booking-content">
+    <h3>Book a Visit</h3>
+    <form th:action="@{/ngo/book}" method="post" id="bookingForm">
+      <input type="hidden" name="ngoId" id="ngoId" />
+
+      <label>Date:</label>
+      <input type="date" name="date" id="bookingDate" required onchange="checkSlotAvailability()" />
+
+      <label>Time Slot:</label>
+      <select name="slot" id="slotSelect" required>
+        <option value="">-- Select a Time Slot --</option>
+        <option value="Morning">Morning (8 AM - 11 AM)</option>
+        <option value="Afternoon">Afternoon (12 PM - 2 PM)</option>
+        <option value="Evening">Evening (7 PM - 10 PM)</option>
+      </select>
+
+      <label>Meal Type:</label>
+      <select name="mealType" id="mealType" required>
+        <option value="">-- Select a Meal Type --</option>
+        <option value="Breakfast">Breakfast</option>
+        <option value="Lunch">Lunch</option>
+        <option value="Dinner">Dinner</option>
+      </select>
+
+      <label>Other Donations:</label>
+      <input type="text" name="otherDonations" id="otherDonations" />
+
+      <button type="submit" class="btn-book">Confirm Booking</button>
+    </form>
+  </div>
+</div>
+
+<script th:inline="javascript">
+  /*<![CDATA[*/
+  let allBookings = [[${bookings}]]; // Pass list of all NgoBooking objects from controller
+
+  function openBookingModal(ngoId) {
+    document.getElementById('ngoId').value = ngoId;
+    document.getElementById('bookingModal').style.display = 'flex';
+  }
+
+  function checkSlotAvailability() {
+    const selectedDate = document.getElementById('bookingDate').value;
+    const ngoId = document.getElementById('ngoId').value;
+    const slotSelect = document.getElementById('slotSelect');
+
+    // Reset options
+    for (let i = 0; i < slotSelect.options.length; i++) {
+      slotSelect.options[i].disabled = false;
+      slotSelect.options[i].text = slotSelect.options[i].value;
+    }
+    if (!selectedDate) return;
+
+    const bookedSlots = allBookings
+      .filter(b => b.ngo.ngoId == ngoId && b.date === selectedDate)
+      .map(b => b.slot);
+
+    for (let i = 0; i < slotSelect.options.length; i++) {
+      const opt = slotSelect.options[i];
+      if (bookedSlots.includes(opt.value)) {
+        opt.disabled = true;
+        opt.text = opt.value + " - FULL";
+      }
+    }
+  }
+
+  window.onclick = function(e) {
+    if (e.target.id === 'bookingModal')
+      document.getElementById('bookingModal').style.display = 'none';
+  };
+  /*]]>*/
+</script>
+
+</body>
+</html>

@@ -1,0 +1,222 @@
+/* ========================================
+   CLAIM APPROVALS PAGE - GRADIENT THEME FIXED
+   ======================================== */
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(to bottom right, #e6f0ff, #f9fbff);
+    color: #003366;
+}
+
+/* Shift content when sidebar opens */
+body.shifted #pageContent {
+    margin-left: 250px; /* sidebar width */
+    transition: margin-left 0.3s ease;
+}
+
+/* Heading */
+h1 {
+    text-align: center;
+    color: #004080;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    letter-spacing: 1px;
+}
+
+/* Search Box */
+    .search-container {
+        margin: 10px auto;
+        text-align: center;
+    }
+    #searchInput {
+        width: 50%;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 25px;
+        outline: none;
+        font-size: 14px;
+    }
+    .count-info {
+        text-align: center;
+        margin-top: 10px;
+        font-size: 16px;
+        color: #555;
+    }
+/* Tabs */
+.tab-container {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 20px 0;
+    align-items: center; /* corrected 'align' → 'align-items' */
+}
+
+.tab-button {
+    background: linear-gradient(90deg, #0077b6, #00b4d8); /* match top bar */
+    border: none;
+    color: white;
+    padding: 8px 18px; /* slightly smaller for modern look */
+    font-size: 14px;   /* smaller size */
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.tab-button:hover {
+    background: linear-gradient(90deg, #00b4d8, #0077b6); /* reversed gradient on hover */
+    transform: scale(1.05);
+}
+
+.tab-button.active {
+    background: linear-gradient(90deg, #005f87, #0077b6); /* darker gradient for active state */
+    transform: scale(1.05);
+}
+
+
+/* Donation Group */
+.donation-group {
+    width: 95%;
+    max-width: 1100px;
+    margin: 15px auto;
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.group-header {
+    background: linear-gradient(135deg, #0077b6, #00b4d8);
+    color: white;
+    padding: 12px 16px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.group-header span {
+    font-size: 15px;
+}
+
+/* Table */
+.claims-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    background: transparent; /* Remove extra white around table */
+}
+
+.claims-table th, .claims-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+}
+
+.claims-table thead tr {
+    background: linear-gradient(135deg, #0077b6, #00b4d8);
+    color: white;
+}
+
+.claims-table tr:nth-child(even) {
+    background-color: #f4f8ff;
+}
+
+.claims-table tr:hover {
+    background-color: #e9f2ff;
+    transition: background 0.2s ease;
+}
+
+.claims-table td a {
+    color: #0056b3;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.claims-table td a:hover {
+    color: #007bff;
+    text-decoration: underline;
+}
+
+/* Buttons */
+.btn {
+    border: none;
+    padding: 6px 12px;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    font-size: 13px;
+    margin: 2px 2px;
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: scale(1.05);
+    opacity: 0.9;
+}
+
+.approve { background-color: #28a745; }
+.reject { background-color: #dc3545; }
+.refer { background-color: #ffc107; color: black; }
+
+/* Textarea */
+textarea {
+    width: 95%;
+    resize: none;
+    margin-top: 6px;
+    border: 1px solid #0077b6;
+    border-radius: 6px;
+    padding: 6px;
+    font-size: 14px;
+    background-color: #f9fbff;
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(3px);
+}
+
+.modal-content {
+    background-color: #ffffff;
+    margin: 8% auto;
+    padding: 20px;
+    border-radius: 12px;
+    width: 40%;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+    animation: popupIn 0.3s ease;
+}
+
+@keyframes popupIn {
+    from { transform: translateY(-20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.close {
+    float: right;
+    font-size: 24px;
+    font-weight: bold;
+    color: #666;
+    cursor: pointer;
+}
+
+.close:hover { color: #ff3333; }
+
+/* Responsive */
+@media (max-width: 768px) {
+    .modal-content { width: 80%; }
+    .claims-table th, .claims-table td { padding: 8px 6px; font-size: 12px; }
+    .tab-button { padding: 6px 12px; font-size: 12px; }
+    #searchInput { width: 90%; }
+    .tab-container { flex-direction: column; gap: 8px; }
+}

@@ -1,0 +1,162 @@
+/* ===== Global Styles ===== */
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #f4f8ff;
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    text-align: center;
+    color: #004080;
+    margin-top: 20px;
+}
+
+/* ===== NGO Container ===== */
+.ngo-container {
+    width: 90%;
+    margin: 20px auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    padding-bottom: 40px;
+}
+
+/* ===== NGO Card ===== */
+.ngo-card {
+    background: #fff;
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    border-left: 6px solid #0077b6;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ngo-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.12);
+}
+
+/* ===== NGO Image ===== */
+.ngo-image {
+    width: 100%;
+    height: 180px;
+    overflow: hidden;
+    border-radius: 12px;
+    margin-bottom: 10px;
+}
+
+.ngo-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+/* ===== Headings & Text ===== */
+.ngo-card h3 {
+    color: #0077b6;
+    margin: 0 0 5px 0;
+}
+
+.ngo-card p {
+    margin: 2px 0;
+    font-size: 0.95rem;
+    color: #333;
+}
+
+/* ===== Slots ===== */
+.slot-container {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.slot-container div {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* ===== Other Donations ===== */
+.other-donations input {
+    width: 100%;
+    padding: 8px 12px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    font-size: 0.95rem;
+    background-color: #f4f8ff;
+}
+
+/* ===== Buttons ===== */
+.btn-book {
+    background: linear-gradient(135deg, #0077b6, #00b4d8);
+    color: #fff;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 600;
+    margin-top: 10px;
+    transition: all 0.3s ease;
+}
+
+.btn-book:hover {
+    background: linear-gradient(135deg, #005f8c, #0096c7);
+    transform: translateY(-2px);
+}
+
+/* ===== Booking Modal ===== */
+#bookingModal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 10;
+    justify-content: center;
+    align-items: center;
+}
+
+#bookingModal > div {
+    background: #fff;
+    padding: 25px;
+    border-radius: 16px;
+    width: 350px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#bookingModal h3 {
+    color: #0077b6;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+#bookingModal input[type="text"],
+#bookingModal input[type="date"],
+#bookingModal input[type="time"],
+#bookingModal select {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+    font-size: 0.95rem;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 600px) {
+    .ngo-container {
+        grid-template-columns: 1fr;
+        width: 95%;
+    }
+    .slot-container {
+        flex-direction: column;
+        gap: 8px;
+    }
+}
